@@ -1,6 +1,11 @@
 global MAP_PAR;
 if (isfield(MAP_PAR,'MAP_H') &&  ishandle(MAP_PAR.MAP_H) && isequal('on',get(MAP_PAR.MAP_H,'Visible')))
 
+if (~isempty(Modul) && Modul.SaveExp && ~isempty(MAP_PAR) && isfield(MAP_PAR,'SAVEMAP'))
+if (mod(MAP_PAR.SAVEMAP.tick,MAP_PAR.SAVEMAP.freq)~=0)
+    return
+end
+end
 global ISO_MAP_PAR ;
 if (~isempty(ISO_MAP_PAR))
 %% global

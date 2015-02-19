@@ -5,14 +5,17 @@ clc
 %%
 
 global iso_par;
+iso_par.Type=19; %тип изолинии
 iso_par.d0d=400;   %Шарана коридора присоедования
 iso_par.error=0.00;    %Ошибка датчика в %
 iso_par.d0=1000; %приследуемое значение
-iso_par.Type=11; %тип изолинии
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=0.3;   %Ускорение изолинии по времени
 iso_par.Nagent=10;%8  %Кол-во агентов
+iso_par.Nagent2=0;%8  %Кол-во агентов
 iso_par.smooth=0;   %*гладкий режим*
+iso_par.d02=iso_par.d0; %приследуемое значение
+iso_par.d0d2=iso_par.d0d; %приследуемое значение
 
 iso_par.mooved=false; % Движение поля NEW!!!!!!!!
 iso_par.mix=false; % Движение поля NEW!!!!!!!!
@@ -97,6 +100,45 @@ if (iso_par.Type>10 && iso_par.Type<16)
     iso_par.d0d=100;    
     iso_par.Sgrad=0.9;  
 end
+%% БЛОК НАСТРОЙКИ ДЛЯ 8 Этапа
+if (iso_par.Type==16)
+    iso_par.R_vision=1500;
+    iso_par.Fi_vision=0.7*pi/2;    
+    iso_par.d0=300;
+    iso_par.d0d=100;    
+    iso_par.Sgrad=0.9;  
+end
+
+if (iso_par.Type==18)
+    iso_par.Type=15;
+    iso_par.R_vision=1000;
+    iso_par.Fi_vision=0.7*pi/2;    
+    iso_par.d0=300;
+    iso_par.d0d=100;    
+    iso_par.d02=800;
+    iso_par.d0d2=200;    
+    iso_par.Sgrad=0.9;  
+    iso_par.Nagent2=5;
+end
+
+if (iso_par.Type==19)
+    iso_par.Nagent2=5;            
+    iso_par.Nagent=15;
+    iso_par.R_vision=1000;
+    iso_par.Fi_vision=0.7*pi/2;    
+    iso_par.d0=300;
+    iso_par.d0d=100;    
+    iso_par.d02=500;
+    iso_par.d0d2=100;    
+    iso_par.Sgrad=0.8;  
+end
+% if (iso_par.Type>=17 && iso_par.Type<16)
+%     iso_par.R_vision=1000;
+%     iso_par.Fi_vision=0.7*pi/2;    
+%     iso_par.d0=300;
+%     iso_par.d0d=100;    
+%     iso_par.Sgrad=0.9;  
+% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Global MODUL INI
@@ -106,10 +148,11 @@ global iso_MODUL_ON; iso_MODUL_ON=1;
 
 global Pause; Pause=0;
 
-global Rules;    Rules=zeros(12,7);
+global Rules;    Rules=zeros(30,7);
 global Balls;    Balls=zeros(1,3);
-global Blues;    Blues=zeros(1000,4);
+global Blues;    Blues=zeros(100,4);
 global Yellows;  Yellows=zeros(12,4);
+global Greens;   Greens=zeros(12,4);
 
 global Modul;
 Modul.Tend=1000; %Время работы
@@ -136,10 +179,10 @@ BluesSTART=Blues;
 tic();
 fprintf('---Start Modul!---\n');
 while(Modul.T+Modul.dT<=Modul.Tend )    
-    Rules=zeros(12,7);
+    Rules=zeros(30,7);
     %----------------------------------------------------------------------
     Modul.N=Modul.N+1;    Modul.T=Modul.T+Modul.dT;    
-    iso_main; 
+    iso_main;     
     iso_save_map
     if (Modul.N==1)  
         iso_MAP_INI        
@@ -155,7 +198,7 @@ while(Modul.T+Modul.dT<=Modul.Tend )
         Modul.Rules_Delay{Modul.Delay}=Rules_Delay_S;
     end
     %---------------------------------------------------------------------- 
-    for i=1:iso_par.Nagent
+    for i=1:iso_par.Nagent+iso_par.Nagent2
         MOD_NGO(i,i,'Y',1);    
     end   
     %----------------------------------------------------------------------

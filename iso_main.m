@@ -1,12 +1,11 @@
 %Внутреннее
 %% Data
 %от SSL
-global Yellows;
-global Blues;
+global Yellows Greens Blues;
 %для BT
 global Rules;
 if isempty(Rules)
-    Rules=zeros(12,7);
+    Rules=zeros(30,7);
 end
 global Modul;
 %% isoMAP
@@ -145,6 +144,16 @@ for i=1:iso_par.Nagent
     Rule(i,iso_rules(i,1),iso_rules(i,2),0,0,0);
 end
 iso_save();
+%% iso
+%iso_rules=iso_rule(Greens);
+
+%Rule(1,80,100,0,0,0);
+
+%Rule(3,100,80,0,0,0);
+%for i=1:iso_par.Nagent2
+%    Rule(15+i,iso_rules(i,1),iso_rules(i,2),0,0,0);
+%end
+%iso_save();
 %toc()
 %% MAP
 iso_MAP

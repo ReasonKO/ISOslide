@@ -48,7 +48,7 @@ if (iso_par.Type==9)
     
     re(dis>Nrob*(const1*100)^2)=dis(dis>Nrob*(const1*100)^2);
 end
-if (iso_par.Type==10) || (iso_par.Type>10 && iso_par.Type<16)
+if (iso_par.Type==10) || (iso_par.Type>10 && iso_par.Type<=19)
     dimax1=inf*ones(size(x));
     dimax2=inf*ones(size(x));
     for i=1:size(Blues,1)

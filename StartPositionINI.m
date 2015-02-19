@@ -84,7 +84,7 @@ if (iso_par.Type==14)
 end
 
 %AddBlues=@(i,j,N)repmat(zn(i,:),[N,1])+(1:N)'/N*(zn(j,:)-zn(i,:));
-Dynamics();
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Yellows    
 %--- DEFAULT
@@ -101,6 +101,7 @@ if (iso_par.Type==14)
     end
 end
 
+Dynamics();
 %Yellows(1,:)=[1,800,300,pi/2];
 %Yellows(2,:)=[1,0,300,pi/2];
 %Yellows(3,:)=[1,-600,300,-pi/2];

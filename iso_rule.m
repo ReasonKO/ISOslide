@@ -83,10 +83,10 @@ CloudyMatrix=zeros(N,N);
 
 for i=1:N
     for j=(i+1):N
-        Lzt=1000;
+        Lzt=50;
         Zt=repmat(Robots(i,2:3),[Lzt,1])+(1:Lzt)'/Lzt*(Robots(j,2:3)-Robots(i,2:3));
         Dt=iso_D(Zt(:,1),Zt(:,2));
-        CloudyMatrix(i,j)=~isempty(find((Dt<20),1));
+        CloudyMatrix(i,j)=~isempty(find((Dt<50),1));
         CloudyMatrix(j,i)=CloudyMatrix(i,j);        
     end
 end
@@ -154,7 +154,7 @@ if ~isempty(Modul)
         %drawy=[drawy,Robots(i,3)+[0,Rd_vision*sin(Robots(i,4)+pi/2+viz_ang_Rd),0]];
             %plot(Robots(i,2)+Rd_vision*cos(0:0.1:2*pi),Robots(i,3)+Rd_vision*sin(0:0.1:2*pi),'R');
         if (Modul.N>1)
-            if (Modul.N==2)
+            if (~isfield(ISO_VISION,'viz') || size(ISO_VISION.viz,2)<i)
                 ISO_VISION.viz(i)=plot(drawx/100,drawy/100,'K');
             else
                 set(ISO_VISION.viz(i),'xdata',drawx/100,'ydata',drawy/100);
@@ -212,17 +212,22 @@ for i=1:N
 d=iso_D(Robots(i,2),Robots(i,3));
 d_save(i)=d;
     
-        
         d=d+iso_par.d0*(0.01*randn(1,1)*iso_par.error);%погрешность датчика
-        
         dold=iso_save.dold(i);
         d_dot=(d-dold);
         iso_save.dold(i)=d;
 %-------------------- Xi
-        if abs(d-iso_par.d0)<iso_par.d0d
-            xi=((d-iso_par.d0)/iso_par.d0d)*iso_par.Sgrad;
+        if (i<=iso_par.Nagent-iso_par.Nagent2)
+            tempd0=iso_par.d0;
+            tempd0d=iso_par.d0d;
         else
-            xi=sign(d-iso_par.d0)*iso_par.Sgrad; % y*d0d
+            tempd0=iso_par.d02;
+            tempd0d=iso_par.d0d2;
+        end
+        if abs(d-tempd0)<tempd0d
+            xi=((d-tempd0)/tempd0d)*iso_par.Sgrad;
+        else
+            xi=sign(d-tempd0)*iso_par.Sgrad; % y*d0d
         end        
 %-------------------- U
         if iso_par.smooth

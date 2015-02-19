@@ -1,6 +1,6 @@
-global Blues Modul
+global Blues Modul Yellows
 
-if (iso_par.Type==15)    
+if (iso_par.Type==15 || iso_par.Type==19)    
     M=300+100*sin(Modul.T*iso_par.Tspeed/30);
     Blues=zeros(1000,4);
     Blues=AddBlues([-1,4]*M,[1,4]*M,3,Blues);
@@ -13,8 +13,21 @@ if (iso_par.Type==15)
     Blues=AddBlues([-1,-3]*M,[1,-3]*M,3,Blues);
     Blues=AddBlues([-1,-2]*M,[1,-2]*M,3,Blues);    
 end
-
-if (iso_par.Type==14)
+if (iso_par.Type==19)
+    if  (Modul.T>100)
+        if (Yellows(iso_par.Nagent,1)==0)
+            fprintf('NewUnits\n');
+        end
+        for i=1:iso_par.Nagent2
+            Yellows(i+iso_par.Nagent-iso_par.Nagent2,1)=1;
+        end    
+    else
+        for i=1:iso_par.Nagent2
+            Yellows(i+iso_par.Nagent-iso_par.Nagent2,1)=0;
+        end
+    end
+end
+if (iso_par.Type==14 || iso_par.Type==16 )
     if (iso_par.dopisofieldMap)
        NC=100;
     else
@@ -30,6 +43,12 @@ if (iso_par.Type==14)
     Blues((size(ta,1)*2+1):3*size(ta,1),2:3)=1250*[A,B];
     Blues((size(ta,1)*3+1):4*size(ta,1),2:3)=1400*[A,B];
     Blues(1:4*size(ta,1),1)=1;
+    if (iso_par.Type==16)
+        amplitude=500;
+        frequency=1/100;
+        M=amplitude*sin(Modul.T*iso_par.Tspeed*frequency);   
+        Blues=Blues+ones(size(Blues,1),1)*[0,0,M,0];
+    end
 end
 if (iso_par.Type==12) 
     Blues=zeros(1000,4);

@@ -4,9 +4,7 @@
 
 %% Было ли создано окно?
 global MAP_PAR;
-global Blues;
-global Yellows;
-global Balls;
+global Blues Yellows Balls Greens;
 if (isfield(MAP_PAR,'MAP_H') && ishandle(MAP_PAR.MAP_H) && isequal('on',get(MAP_PAR.MAP_H,'Visible')))
 %% BEGIN 
 
@@ -39,9 +37,15 @@ for MAP_i=1:size(Yellows,1)
         viz_angy=[Yellows(MAP_i,3),Yellows(MAP_i,3)+MAP_l*sin(Yellows(MAP_i,4))]/100;
         if (isempty(MAP_PAR.viz_Yellows{MAP_i}))
             figure(100)
-            MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'R.','MarkerSize',25);   
-            MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'K','LineWidth',2);   
-            MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'R-','LineWidth',2);            
+            if (MAP_i<=iso_par.Nagent-iso_par.Nagent2)
+                MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'R.','MarkerSize',25);   
+                MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'K','LineWidth',2);   
+                MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'R-','LineWidth',2);            
+            else
+                MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'G.','MarkerSize',25);   
+                MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'K','LineWidth',2);   
+                MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'G-','LineWidth',2);            
+            end
             %MAP_PAR.viz_Yellows{MAP_i}(3)=text(viz_x+MAP_l/2,viz_y+MAP_l/2,{MAP_i});
         else                        
             set(MAP_PAR.viz_Yellows{MAP_i}(1),'xdata',viz_x,'ydata',viz_y);
@@ -58,6 +62,7 @@ for MAP_i=1:size(Yellows,1)
         end
     end
 end
+
 if (Balls(1)>0)
     viz_x=Balls(2);
     viz_y=Balls(3);
