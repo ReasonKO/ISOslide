@@ -45,12 +45,17 @@ global PAR;
         figure(100)
         if (iso_par.TripleIsoline)
             Zisoline=[iso_par.d0-iso_par.d0d,iso_par.d0,iso_par.d0+iso_par.d0d];
+            Zisoline2=[iso_par.d02,iso_par.d02+0];
         else
+            Zisoline2=[iso_par.d02,iso_par.d02+0];
             Zisoline=[iso_par.d0,iso_par.d0+0];
         end
+        [C2,ISO_MAP_PAR.viz_cont2]=contour(X/100,Y/100,Z,Zisoline2,'B--');
+        set(ISO_MAP_PAR.viz_cont2,'LineWidth',1.5);
         [C,ISO_MAP_PAR.viz_cont]=contour(X/100,Y/100,Z,Zisoline,'B--');
         set(ISO_MAP_PAR.viz_cont,'LineWidth',1.5);
     else        
+        set(ISO_MAP_PAR.viz_cont2,'zdata',Z)
         set(ISO_MAP_PAR.viz_cont,'zdata',Z)
     end
     %drawnow
