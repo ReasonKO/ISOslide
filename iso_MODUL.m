@@ -5,7 +5,8 @@ clc
 %%
 
 global iso_par;
-iso_par.Type=16; %тип изолинии
+iso_par.Type2=0;
+iso_par.Type=21; %тип изолинии
 iso_par.d0d=400;   %Шарана коридора присоедования
 iso_par.error=0.00;    %Ошибка датчика в %
 iso_par.d0=1000; %приследуемое значение
@@ -149,6 +150,21 @@ if (iso_par.Type==20)
     iso_par.Nagent=8;
     iso_par.Nagent2=5;
     iso_par.d0d2ison=true;
+end
+if (iso_par.Type==21)
+    iso_par.Type2=2;
+    iso_par.Type=12;
+    iso_par.R_vision=1000;
+    iso_par.Fi_vision=0.7*pi/2;    
+    iso_par.d0=300;
+    iso_par.d0d=100;    
+%    iso_par.d02=800;
+%    iso_par.d0d2=200;    
+    
+    iso_par.Sgrad=0.9;  
+    iso_par.Nagent=8;
+    iso_par.Nagent2=3;
+%    iso_par.d0d2ison=true;
 end
 % if (iso_par.Type>=17 && iso_par.Type<16)
 %     iso_par.R_vision=1000;

@@ -50,7 +50,21 @@ if (iso_par.Type==14 || iso_par.Type==16 )
         Blues=Blues+ones(size(Blues,1),1)*[0,0,M,0];
     end
 end
-if (iso_par.Type==12) 
+if (iso_par.Type==12 )
+    if (iso_par.Type2==2)
+        if  (Modul.T>200)
+            if (Yellows(iso_par.Nagent,1)==0)
+                fprintf('NewUnits\n');
+            end
+            for i=1:iso_par.Nagent2
+                Yellows(i+iso_par.Nagent-iso_par.Nagent2,1)=1;
+            end    
+        else
+            for i=1:iso_par.Nagent2
+                Yellows(i+iso_par.Nagent-iso_par.Nagent2,1)=0;
+            end
+        end
+    end
     Blues=zeros(1000,4);
     M=mod(Modul.T*iso_par.Tspeed/100,4);    
     D=[-100,-100];
