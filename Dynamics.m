@@ -14,6 +14,7 @@ if (iso_par.Type==15 || iso_par.Type==19)
     Blues=AddBlues([-1,-2]*M,[1,-2]*M,3,Blues);    
 end
 if (iso_par.Type==19)
+    if  (iso_par.Type2==0)
     if  (Modul.T>100)
         if (Yellows(iso_par.Nagent,1)==0)
             fprintf('NewUnits\n');
@@ -26,6 +27,7 @@ if (iso_par.Type==19)
             Yellows(i+iso_par.Nagent-iso_par.Nagent2,1)=0;
         end
     end
+    end
 end
 if (iso_par.Type==14 || iso_par.Type==16 )
     if (iso_par.dopisofieldMap)
@@ -35,7 +37,7 @@ if (iso_par.Type==14 || iso_par.Type==16 )
     end
     ta=2*pi*(0:NC)'/NC;
     CR=1000;
-    M=Modul.T*iso_par.Tspeed/50;
+    M=-Modul.T*iso_par.Tspeed/50;
     
     [A,B]=rotV(2*cos(pi/2-ta),sin(pi/2-ta),M);
     Blues(1:size(ta,1),2:3)=1000.*[A,B];
@@ -44,8 +46,8 @@ if (iso_par.Type==14 || iso_par.Type==16 )
     Blues((size(ta,1)*3+1):4*size(ta,1),2:3)=1400*[A,B];
     Blues(1:4*size(ta,1),1)=1;
     if (iso_par.Type==16)
-        amplitude=500;
-        frequency=1/100;
+        amplitude=1500;
+        frequency=2/100;
         M=amplitude*sin(Modul.T*iso_par.Tspeed*frequency);   
         Blues=Blues+ones(size(Blues,1),1)*[0,0,M,0];
     end
@@ -55,6 +57,13 @@ if (iso_par.Type==12 )
         if  (Modul.T>200)
             if (Yellows(iso_par.Nagent,1)==0)
                 fprintf('NewUnits\n');
+                for i=(1:iso_par.Nagent2)+iso_par.Nagent-iso_par.Nagent2
+                    if (~isnan(iso_par.outsidespawn))
+                        while (iso_D(Yellows(i,2:3))<iso_par.outsidespawn)
+                            Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+                        end
+                    end
+                end
             end
             for i=1:iso_par.Nagent2
                 Yellows(i+iso_par.Nagent-iso_par.Nagent2,1)=1;

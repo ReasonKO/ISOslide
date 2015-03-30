@@ -84,12 +84,18 @@ if (iso_par.Type==14)
 end
 
 %AddBlues=@(i,j,N)repmat(zn(i,:),[N,1])+(1:N)'/N*(zn(j,:)-zn(i,:));
-
+Dynamics();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Yellows    
 %--- DEFAULT
 for i=1:iso_par.Nagent
+    
     Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+    if (~isnan(iso_par.outsidespawn))
+        while (iso_D(Yellows(i,2:3))<iso_par.outsidespawn)
+            Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+        end
+    end
     %fi=rand(1,1)*2*pi;
     %Yellows(i,:)=[1,1250*[cos(fi),sin(fi)],fi-pi/2];
 end
@@ -100,7 +106,24 @@ if (iso_par.Type==14)
         Yellows(i,:)=[1,rR*2*cos(rang),rR*sin(rang),rand(1,1)*2*pi];
     end
 end
-
+if  (iso_par.Type==16)
+    for i=1:iso_par.Nagent-5
+    Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+    if (~isnan(iso_par.outsidespawn))
+        while (iso_D(Yellows(i,2:3))<iso_par.outsidespawn || norm(Yellows(i,2:3))<1500)
+            Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+        end
+    end
+    end
+    for i=iso_par.Nagent-4:iso_par.Nagent
+    Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+    if (~isnan(iso_par.outsidespawn))
+        while (iso_D(Yellows(i,2:3))<iso_par.outsidespawn || norm(Yellows(i,2:3))>1500)
+            Yellows(i,:)=[1,(rand(1,3)-0.5).*[PAR.MAP_Y*0.8,PAR.MAP_Y*0.5,2*pi]];
+        end
+    end
+    end
+end
 Dynamics();
 %Yellows(1,:)=[1,800,300,pi/2];
 %Yellows(2,:)=[1,0,300,pi/2];

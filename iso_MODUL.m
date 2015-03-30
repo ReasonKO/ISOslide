@@ -6,7 +6,7 @@ clc
 
 global iso_par;
 iso_par.Type2=0;
-iso_par.Type=21; %тип изолинии
+iso_par.Type=16; %тип изолинии
 iso_par.d0d=400;   %Шарана коридора присоедования
 iso_par.error=0.00;    %Ошибка датчика в %
 iso_par.d0=1000; %приследуемое значение
@@ -26,20 +26,22 @@ iso_par.dopisofieldMap=false;
 
 iso_par.CloudyField=true; %Делает поле НЕ прозрачным NEW!!!!!!!!
 
-iso_par.TracksVizual=0; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до выхода на изолинию)
-iso_par.TracksTime=500; %Затирание трека спустя iso_par.TracksTime отрисовок
+iso_par.TracksVizual=1; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до выхода на изолинию)
+iso_par.TracksTime=100; %Затирание трека спустя iso_par.TracksTime отрисовок
 
-iso_par.Vmax=50; %Максимальная линейная скорость [Vmin..100]
-iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
-iso_par.Umax=50; %Максимальная скорость поворота [0..(100-Vmax)]
+iso_par.Vmax=60; %Максимальная линейная скорость [Vmin..100]
+iso_par.Vmin=20; %Минимальная линейная скорость  [0..Vmax] 
+iso_par.Umax=40; %Максимальная скорость поворота [0..(100-Vmax)]
 
 iso_par.R_vision=800;       %Радиус видимости робота.
 iso_par.Fi_vision=0.5*pi/2; %Угол видимости робота
 iso_par.Rd_vision=0.9*iso_par.R_vision/iso_par.Nagent; % Радиус ближайших
 iso_par.e=(iso_par.Vmax-iso_par.Vmin)/iso_par.Nagent/50;  %коэфициент замедления для ряда ближайших
 
+iso_par.outsidespawn=NaN;
+
 iso_par.VidVisible=true;
-iso_par.SectorVisual=true;%Визуализация сектора видимости
+iso_par.SectorVisual=0;%Визуализация сектора видимости
 
 global PAR;
 PAR.MAP_X=7500;
@@ -109,7 +111,11 @@ if (iso_par.Type==16)
     iso_par.Fi_vision=0.7*pi/2;    
     iso_par.d0=300;
     iso_par.d0d=100;    
-    iso_par.Sgrad=0.9;  
+    iso_par.Sgrad=0.8;   
+    
+    iso_par.Nagent=15;
+    iso_par.outsidespawn=300;
+    iso_par.Tspeed=0.2;
 PAR.MAP_X=10000;
 PAR.MAP_Y=10000;
 end
@@ -156,15 +162,32 @@ if (iso_par.Type==21)
     iso_par.Type=12;
     iso_par.R_vision=1000;
     iso_par.Fi_vision=0.7*pi/2;    
+
     iso_par.d0=300;
     iso_par.d0d=100;    
 %    iso_par.d02=800;
 %    iso_par.d0d2=200;    
-    
-    iso_par.Sgrad=0.9;  
-    iso_par.Nagent=8;
-    iso_par.Nagent2=3;
+    iso_par.outsidespawn=200;
+    iso_par.Sgrad=0.8;  
+    iso_par.Nagent=15;
+    iso_par.Nagent2=5;
 %    iso_par.d0d2ison=true;
+end
+
+if (iso_par.Type==22)
+    iso_par.Type=19;
+    iso_par.Nagent2=10;            
+    iso_par.Nagent=20;
+    iso_par.R_vision=1000;
+    iso_par.Fi_vision=0.7*pi/2;    
+    iso_par.d0=300;
+    iso_par.d0d=100;   
+    iso_par.d0=400;
+    iso_par.d0d=100;
+    iso_par.Sgrad=0.8;     
+    iso_par.d0d2ison=true;
+    iso_par.Type2=1;    
+    iso_par.outsidespawn=300;
 end
 % if (iso_par.Type>=17 && iso_par.Type<16)
 %     iso_par.R_vision=1000;
@@ -173,6 +196,10 @@ end
 %     iso_par.d0d=100;    
 %     iso_par.Sgrad=0.9;  
 % end
+if (iso_par.d0d2ison==false)
+    iso_par.d02=iso_par.d0;
+    iso_par.d0d2=iso_par.d0d;
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Global MODUL INI
 
@@ -188,8 +215,8 @@ global Yellows;  Yellows=zeros(12,4);
 global Greens;   Greens=zeros(12,4);
 
 global Modul;
-Modul.Tend=1000; %Время работы
-Modul.dT=0.1;     %Щаг дискретизации
+Modul.Tend=2000; %Время работы
+Modul.dT=0.2;     %Щаг дискретизации
 Modul.Delay=0;  %Задержка
 Modul.l_wheel=100;
 Modul.T=0;
@@ -216,6 +243,7 @@ while(Modul.T+Modul.dT<=Modul.Tend )
     %----------------------------------------------------------------------
     Modul.N=Modul.N+1;    Modul.T=Modul.T+Modul.dT;    
     iso_main;     
+    %MAP
     iso_save_map
     if (Modul.N==1)  
         iso_MAP_INI        

@@ -1,4 +1,8 @@
 function re = iso_D(x,y)
+if (nargin==1 && sum(size(x))==3)
+    y=x(2);
+    x=x(1);
+end
 re=zeros(size(x));
 global Blues;
 global iso_par;

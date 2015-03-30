@@ -5,6 +5,7 @@ global Modul
 if isfield(MAP_PAR,'SAVEMAP')
     saveas(1001,[MAP_PAR.SAVEMAP.name,'/','GroupState','.png']);
     saveas(201,[MAP_PAR.SAVEMAP.name,'/','UnitState','.png']);
+    saveas(202,[MAP_PAR.SAVEMAP.name,'/','ddot','.png']);
     saveas(204,[MAP_PAR.SAVEMAP.name,'/','vLen','.png']);
 
     fid=fopen([MAP_PAR.SAVEMAP.name,'/','param.txt'],'wb');
