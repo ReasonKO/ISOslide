@@ -50,12 +50,16 @@ global PAR;
             Zisoline2=[iso_par.d02,iso_par.d02+0];
             Zisoline=[iso_par.d0,iso_par.d0+0];
         end
+        if (iso_par.d0d2ison)
         [C2,ISO_MAP_PAR.viz_cont2]=contour(X/100,Y/100,Z,Zisoline2,'B--');
         set(ISO_MAP_PAR.viz_cont2,'LineWidth',1.5);
-        [C,ISO_MAP_PAR.viz_cont]=contour(X/100,Y/100,Z,Zisoline,'B--');
-        set(ISO_MAP_PAR.viz_cont,'LineWidth',1.5);
+        end
+            [C,ISO_MAP_PAR.viz_cont]=contour(X/100,Y/100,Z,Zisoline,'B--');
+            set(ISO_MAP_PAR.viz_cont,'LineWidth',1.5);
     else        
-        set(ISO_MAP_PAR.viz_cont2,'zdata',Z)
+        if (iso_par.d0d2ison)
+            set(ISO_MAP_PAR.viz_cont2,'zdata',Z)
+        end
         set(ISO_MAP_PAR.viz_cont,'zdata',Z)
     end
     %drawnow

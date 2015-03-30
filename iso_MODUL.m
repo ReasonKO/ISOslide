@@ -5,7 +5,7 @@ clc
 %%
 
 global iso_par;
-iso_par.Type=20; %тип изолинии
+iso_par.Type=16; %тип изолинии
 iso_par.d0d=400;   %Шарана коридора присоедования
 iso_par.error=0.00;    %Ошибка датчика в %
 iso_par.d0=1000; %приследуемое значение
@@ -16,6 +16,8 @@ iso_par.Nagent2=0;%8  %Кол-во агентов
 iso_par.smooth=0;   %*гладкий режим*
 iso_par.d02=iso_par.d0; %приследуемое значение
 iso_par.d0d2=iso_par.d0d; %приследуемое значение
+iso_par.d0d2ison=false; %приследуемое значение
+
 
 iso_par.mooved=false; % Движение поля NEW!!!!!!!!
 iso_par.mix=false; % Движение поля NEW!!!!!!!!
@@ -107,6 +109,8 @@ if (iso_par.Type==16)
     iso_par.d0=300;
     iso_par.d0d=100;    
     iso_par.Sgrad=0.9;  
+PAR.MAP_X=10000;
+PAR.MAP_Y=10000;
 end
 
 if (iso_par.Type==18)
@@ -119,6 +123,7 @@ if (iso_par.Type==18)
     iso_par.d0d2=200;    
     iso_par.Sgrad=0.9;  
     iso_par.Nagent2=5;
+    iso_par.d0d2ison=true;
 end
 
 if (iso_par.Type==19)
@@ -128,8 +133,6 @@ if (iso_par.Type==19)
     iso_par.Fi_vision=0.7*pi/2;    
     iso_par.d0=300;
     iso_par.d0d=100;    
-    iso_par.d02=iso_par.d0;
-    iso_par.d0d2=100;    
     iso_par.Sgrad=0.8;  
 end
 
@@ -141,9 +144,11 @@ if (iso_par.Type==20)
     iso_par.d0d=100;    
     iso_par.d02=800;
     iso_par.d0d2=200;    
+    
     iso_par.Sgrad=0.9;  
     iso_par.Nagent=8;
     iso_par.Nagent2=5;
+    iso_par.d0d2ison=true;
 end
 % if (iso_par.Type>=17 && iso_par.Type<16)
 %     iso_par.R_vision=1000;
@@ -152,7 +157,6 @@ end
 %     iso_par.d0d=100;    
 %     iso_par.Sgrad=0.9;  
 % end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Global MODUL INI
 
