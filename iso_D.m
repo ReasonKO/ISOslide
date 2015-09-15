@@ -1,8 +1,92 @@
 function re = iso_D(x,y)
+global EXPERIMENT
+if isempty(EXPERIMENT) || ~isfield(EXPERIMENT,'iso_D') || isempty(EXPERIMENT.iso_D)
+    re=EXPERIMENT.iso_D(x,y);
+    return
+end
 if (nargin==1 && sum(size(x))==3)
     y=x(2);
     x=x(1);
 end
+re=NaN;
+% if (iso_par.Type==1)
+%     %iso_par.C=[0,0];
+%     iso_par.C=400*[cos(iso_par.Tspeed*Modul.T/30),sin(iso_par.Tspeed*Modul.T/30)];
+%     dop=@(x,y)0*sin(20*angVr(x,y));
+%     iso_par.D=@(x,y)+0.4*sqrt((x-iso_par.C(1)).^2+(y-iso_par.C(2)).^2)+dop(x,y);
+% 
+% end
+% if (iso_par.Type==2)
+%     dop=@(x,y)0*sin(x/10).*cos(y/10);    
+%     iso_par.C=[0,0];
+%     iso_par.D=@(x,y)+dop(x,y)+0.1*(4+sin(iso_par.Tspeed*Modul.T/30+5*angVr(x,y))).*sqrt((x).^2+(y).^2)*(9+cos(iso_par.Tspeed*Modul.T/150))/9;
+% end
+% if (iso_par.Type==3)
+%     iso_par.C=[0,0];
+%     iso_par.D=@(x,y)+0.6*(1.5+sin(4+iso_par.Tspeed*Modul.T/200+2*angVr(x,y))).*sqrt((x).^2+(y).^2);
+% end
+% if (iso_par.Type==4)
+%     iso_par.C=[0,0];
+%     iso_par.C2=2000*[cos(iso_par.Tspeed*Modul.T/150),sin(iso_par.Tspeed*Modul.T/150)];
+%     iso_par.D=@(x,y)-2750+200*(((x-iso_par.C2(1)/2).^2+(y-iso_par.C2(2)/2).^2).^(1/7)+((x+iso_par.C2(1)).^2+(y+iso_par.C2(2)).^2).^(1/7));
+% end
+% if (iso_par.Type==5)
+%     iso_par.C=[0,0];
+%     iso_par.C2=1500*[1,0];
+%     iso_par.D=@(x,y)-2750+200*(((x-iso_par.C2(1)).^2+(y-iso_par.C2(2)).^2).^(1/7)+((x+iso_par.C2(1)).^2+(y+iso_par.C2(2)).^2).^(1/7));
+% end
+% if (iso_par.Type==6)
+%     NB=9;
+%     iso_par.C=Blues(NB,2:3);
+%     iso_par.ANG=Blues(NB,4);
+% %    iso_par.C=400*[cos(iso_par.Tspeed*Modul.T/30),sin(iso_par.Tspeed*Modul.T/30)];
+%     %dop=@(x,y)0*sin(20*angVr(x,y));
+%     iso_par.D=@(x,y)+0.4*sqrt((x-iso_par.C(1)).^2+(y-iso_par.C(2)).^2)+...
+%        200*abs(( (x-iso_par.C(1))*sin(iso_par.ANG)+(y-iso_par.C(2))*cos(iso_par.ANG))./...
+%        ((x-iso_par.C(1)).^2+(y-iso_par.C(2)).^2).^(1/2));
+% end
+% if (iso_par.Type==7)
+%     NBm=8;
+%     if (MOD1==1)
+%         NBm=7;
+%     end
+%     modgroup=0;
+%     if (MOD1==5)
+%         NBm=6;
+%         modgroup=6*(Modul.T>NewGroupTime);
+%     end
+%     iso_par.C=[0,0];
+%     Dq=0;
+%     Dq2=0;
+%     for i=1:NBm
+%         i=i+modgroup;
+%         iso_par.C=iso_par.C+Blues(i,2:3);
+%         for j=1:NBm
+%             j=j+modgroup;
+%             Dq=Dq+((Blues(i,2)-Blues(j,2))^2+(Blues(i,3)-Blues(j,3))^2);
+%         end
+%     end
+%     iso_par.C=iso_par.C/NBm;
+%     Dq=Dq/2/NBm/NBm;
+%     k=2;
+%     for i=1:NBm
+%         i=i+modgroup;
+%             Dq2=Dq2+((Blues(i,2)-iso_par.C(1))^2+(Blues(i,3)-iso_par.C(2))^2)^(k/2);
+%     end
+%     Dq2=(Dq2/NBm)^(2/k);
+%     Dq3=0;
+%     for i=1:NBm
+%         i=i+modgroup;
+%             Dq3=max(Dq3,((Blues(i,2)-iso_par.C(1))^2+(Blues(i,3)-iso_par.C(2))^2));
+%     end
+%     %iso_par.ANG=Blues(NB,4);
+% %    iso_par.C=400*[cos(iso_par.Tspeed*Modul.T/30),sin(iso_par.Tspeed*Modul.T/30)];
+%     %dop=@(x,y)0*sin(20*angVr(x,y));
+%     %if (get(0,'CurrentFigure')==100)
+%     %    iplot(iso_par.C(1),iso_par.C(2),'*');
+%     %end
+%     iso_par.D=@(x,y)+(((x-iso_par.C(1)).^2+(y-iso_par.C(2)).^2));%+Dq2);
+% end
 re=zeros(size(x));
 global Blues;
 global iso_par;
@@ -84,7 +168,6 @@ end
 % %    [dimax2,~]=min(Mdinew,'',3);    
 %     re=(dimax1)/2;   
 % end
-
 
 % 
 % if (iso_par.Type>10 && iso_par.Type<16)

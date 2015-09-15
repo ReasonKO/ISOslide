@@ -3,7 +3,7 @@
 % Создание структуры MAP_PAR и перемещение отрисованного ранее
 
 %% Было ли создано окно?
-global MAP_PAR;
+global MAP_PAR iso_par;
 global Blues Yellows Balls Greens;
 if (isfield(MAP_PAR,'MAP_H') && ishandle(MAP_PAR.MAP_H) && isequal('on',get(MAP_PAR.MAP_H,'Visible')))
 %% BEGIN 
@@ -39,11 +39,11 @@ for MAP_i=1:size(Yellows,1)
             figure(100)
             if (MAP_i<=iso_par.Nagent-iso_par.Nagent2)
                 MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'R.','MarkerSize',25);   
-                MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'K','LineWidth',2);   
+                MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);   
                 MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'R-','LineWidth',2);            
             else
                 MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'G.','MarkerSize',25);   
-                MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'K','LineWidth',2);   
+                MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);   
                 MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'G-','LineWidth',2);            
             end
             %MAP_PAR.viz_Yellows{MAP_i}(3)=text(viz_x+MAP_l/2,viz_y+MAP_l/2,{MAP_i});

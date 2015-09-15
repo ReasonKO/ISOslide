@@ -6,7 +6,6 @@ global Pause;
 global Rules;
 
 %% ѕересборка управл€ющего потока
-pcode main.m;
 Rules=zeros(size(Rules));
 if (size(Pause)==[0,0])
     Pause=0;

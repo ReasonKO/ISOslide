@@ -14,6 +14,10 @@ e=iso_par.e; %(V_-V_min)/N/50; %коэфициент замедления для ряда ближайших
 V_   =iso_par.Vmax; %70; %Номинальная линейная скорость
 V_min=iso_par.Vmin; %10; %Номинальная линейная скорость
 U_   =iso_par.Umax; %30  %Номинальный скорость поворота %U_=20..80, U_+V_=100
+
+uslide=0.25;%0.25%1.34;
+dslide=0.07;
+islide=0.015;%P/10
 %% Сохранение шага
 global ISO_VISION;
 global iso_save;
@@ -23,6 +27,8 @@ if isempty(iso_save)
     iso_save.sPmin=zeros(N,1);
     iso_save.Vreal_old=zeros(N,1);
     iso_save.Robots_old=Robots;
+    iso_save.Uold=zeros(N,1);
+    iso_save.SU=zeros(N,1);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Speed(Vreal)----------------------------------------------
@@ -162,6 +168,20 @@ if ~isempty(Modul)
         end    
     end
 end
+%     if ~isempty(Modul)
+%         drawx=Robots(i,2)+R_vision*[0,cos(Robots(i,4)-Fi_vision),cos((Robots(i,4)-Fi_vision):0.2:(Robots(i,4)+Fi_vision)),cos(Robots(i,4)+Fi_vision),0];
+%         drawy=Robots(i,3)+R_vision*[0,sin(Robots(i,4)-Fi_vision),sin((Robots(i,4)-Fi_vision):0.2:(Robots(i,4)+Fi_vision)),sin(Robots(i,4)+Fi_vision),0];
+%         drawx=[drawx,Robots(i,2)+[0,Rd_vision*cos(Robots(i,4)+pi/2+viz_ang_Rd),0]];
+%         drawy=[drawy,Robots(i,3)+[0,Rd_vision*sin(Robots(i,4)+pi/2+viz_ang_Rd),0]];
+%             %plot(Robots(i,2)+Rd_vision*cos(0:0.1:2*pi),Robots(i,3)+Rd_vision*sin(0:0.1:2*pi),'R');
+%         if (Modul.N>1)
+%             if (Modul.N==2)
+%                 ISO_VISION.viz(i)=plot(drawx,drawy);
+%             else
+%                 set(ISO_VISION.viz(i),'xdata',drawx,'ydata',drawy);
+%             end    
+%         end
+%     end
 %--------------------------------------------------------------------------
 end
 end
@@ -172,7 +192,7 @@ if ~isempty(Modul)
         iso_save.sPmin=[iso_save.sPmin,Pmin];
         if (Modul.N==1)
             figure(1001);
-            title('Значение Pmin для каждого робота');
+            title('???????? Pmin ??? ??????? ??????');
             for i=1:N
                 subplot(floor((N-1)/4)+1,4,i)
                 ISO_VISION.vizPmin(i)=plot(0:Modul.N,iso_save.sPmin(i,:));
@@ -181,6 +201,18 @@ if ~isempty(Modul)
             for i=1:N
                 set(ISO_VISION.vizPmin(i),'xdata',0:Modul.N,'ydata',iso_save.sPmin(i,:));
             end
+        end
+    end
+    iso_save.sPmin=[iso_save.sPmin,Pmin];
+    if (Modul.N==1)
+        figure(1001);
+        for i=1:N
+            subplot(floor((N-1)/4)+1,4,i)
+%            ISO_VISION.vizPmin(i)=plot(0:Modul.N,iso_save.sPmin(i,:));
+        end
+    else
+        for i=1:N
+            set(ISO_VISION.vizPmin(i),'xdata',0:Modul.N,'ydata',iso_save.sPmin(i,:));
         end
     end
 end
@@ -209,9 +241,12 @@ for i=1:N
 % d=0.4*sqrt((x-iso_par.C(1)).^2+(y-iso_par.C(2)).^2)+...
 %       0*abs(( (x-iso_par.C(1))*sin(iso_par.ANG)+(y-iso_par.C(2))*cos(iso_par.ANG))./...
 %       ((x-iso_par.C(1)).^2+(y-iso_par.C(2)).^2).^(1/2));       
+
+%d=iso_par.D(Robots(i,2),Robots(i,3));
 d=iso_D(Robots(i,2),Robots(i,3));
 d_save(i)=d;
-    
+        
+        d_clear=d;
         d=d+iso_par.d0*(0.01*randn(1,1)*iso_par.error);%погрешность датчика
         dold=iso_save.dold(i);
         d_dot=(d-dold);
@@ -226,18 +261,37 @@ d_save(i)=d;
         end
         if abs(d-tempd0)<tempd0d
             xi=((d-tempd0)/tempd0d)*iso_par.Sgrad;
+%        if abs(d-iso_par.d0)<iso_par.d0d
+%            xi=(d-iso_par.d0)*iso_par.Sgrad/iso_par.d0d;
         else
             xi=sign(d-tempd0)*iso_par.Sgrad; % y*d0d
+%            xi=sign(d-iso_par.d0)*iso_par.Sgrad; % y*d0d
         end        
 %-------------------- U
+%         if iso_par.smooth
+%             U=U_*10*(d_dot+Vreal*xi);%/(iso_par.Sgrad*V_*Modul.dT);
+%             if (abs(U)>U_)
+%                 U=sign(U)*U_;
+%             end
+%         else
+%             U=U_*sign(d_dot+Vreal*xi);
+%         end%-------------------- U
+%         
         if iso_par.smooth
             U=U_*10*(d_dot+Vreal*xi);%/(iso_par.Sgrad*V_*Modul.dT);
+            %cU=(d_dot+Vreal*xi)/(iso_par.Sgrad*max(Vreal,0.001));
+            %U=U_*uslide*cU+dslide*U_*(cU-iso_save.Uold(i))/Modul.dT;
+            %iso_save.SU(i)=0.9*iso_save.SU(i)+cU;
+            %U=U+U_*islide*iso_save.SU(i);
+%            U=U
+%            U=U+
             if (abs(U)>U_)
                 U=sign(U)*U_;
             end
         else
             U=U_*sign(d_dot+Vreal*xi);
         end
+        iso_save.Uold(i)=U;
 %-------------------- rule
         iso_rules(i,:)=[V+U,V-U];
     end
@@ -251,9 +305,10 @@ if ~isempty(Modul)
         Save_iso.vLen=NaN*ones(N,Modul.Tend/Modul.dT);
         Save_iso.ddot=NaN*ones(1,Modul.Tend/Modul.dT);
         Save_iso.xi=NaN*ones(1,Modul.Tend/Modul.dT);
+        Save_iso.d=NaN*ones(1,Modul.Tend/Modul.dT);
 
-        figure(202)
-        title('Значение d_{dot} и Vreal*xi для первого робота');
+        Save_iso.Map_ddot=figure(201);
+        title('???????? d_{dot} ? Vreal*xi ??? ??????? ??????');
         %subplot(2,1,1)
         %legend('dt(d)/dt','Xi');
         %plot([0,Modul.Tend/Modul.dT],Vreal*[iso_par.Sgrad,iso_par.Sgrad]);
@@ -269,6 +324,7 @@ if ~isempty(Modul)
         Save_iso.Map_ddot=figure(201);
         hold all;
         grid on;
+        
         Save_iso.d=NaN*ones(N,Modul.Tend/Modul.dT);
         for i=1:N
             Save_iso.P_d(i)=plot(1,sqrt(d_save(i)/100),'R','LineWidth',2);     
@@ -276,13 +332,21 @@ if ~isempty(Modul)
         ylabel('d, metres');
         xlabel('t,seconds');
         Save_iso.Map_Len=figure(204);
-        title('Расстояние до ближайшего соседа по прямой');
+        title('?????????? ?? ?????????? ?????? ?? ??????');
         hold all;
         for i=1:N
             Save_iso.Map_Len(i)=plot(1,vizLength(i),'LineWidth',1);     
         end
-
+        
+        Save_iso.P_d=plot(1,sqrt(d)/10,'R');     
+        ylabel('metres');
+        xlabel('seconds');
+        figure(112)
+        Save_iso.P_U=plot(1,U);
+        Save_iso.U=NaN*ones(1,Modul.Tend/Modul.dT);
+        Save_iso.U(1)=U/100;
     else
+        Save_iso.U(Modul.N)=U/100;
         Save_iso.ddot(Modul.N)=d_dot;
         Save_iso.xi(Modul.N)=Vreal*xi;
         for i=1:N
@@ -297,11 +361,19 @@ if ~isempty(Modul)
         set(Save_iso.P_ddot,'xdata',1:Modul.Tend/Modul.dT,'ydata', Save_iso.ddot);
         set(Save_iso.P_xi  ,'xdata',1:Modul.Tend/Modul.dT,'ydata',-Save_iso.xi  );
         for i=1:N
-            set(Save_iso.P_d(i) ,'xdata',(1:Modul.Tend/Modul.dT)*Modul.dT,'ydata',(Save_iso.d(i,:)/100)  );
+%            set(Save_iso.P_d(i) ,'xdata',(1:Modul.Tend/Modul.dT)*Modul.dT,'ydata',(Save_iso.d(i,:)/100)  );
         end
         for i=1:N
             set(Save_iso.Map_Len(i) ,'xdata',(1:Modul.Tend/Modul.dT)*Modul.dT,'ydata',(Save_iso.vLen(i,:)/100)  );
         end
+        Save_iso.d(Modul.N)=d_clear;%-iso_par.d0;
+%    end
+%    if (ishandle(Save_iso.Map_ddot) && isequal('on',get(Save_iso.Map_ddot,'Visible')))
+        %set(Save_iso.P_ddot,'xdata',1:Modul.Tend/Modul.dT,'ydata', Save_iso.ddot);
+        %set(Save_iso.P_xi  ,'xdata',1:Modul.Tend/Modul.dT,'ydata',-Save_iso.xi  );
+    %    set(Save_iso.P_d   ,'xdata',1:Modul.Tend/Modul.dT,'ydata',sqrt(Save_iso.d)/10  );
+    %    set(Save_iso.P_U   ,'xdata',1:Modul.Tend/Modul.dT,'ydata',Save_iso.U/100);
+
         drawnow
     end
 end
