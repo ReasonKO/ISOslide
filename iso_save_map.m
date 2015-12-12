@@ -1,12 +1,12 @@
-global MAP_PAR;
+function iso_save_map()
+global MAP_PAR iso_par Modul
 if (isfield(MAP_PAR,'MAP_H') && ishandle(MAP_PAR.MAP_H) && isequal('on',get(MAP_PAR.MAP_H,'Visible')))
-    global Modul
     if (~isempty(Modul) && Modul.SaveExp)
         if (~isfield(MAP_PAR,'SAVEMAP'))
             MAP_PAR.SAVEMAP.tick=0;
-            MAP_PAR.SAVEMAP.freq=50;    
+            MAP_PAR.SAVEMAP.freq=Modul.save_freq;    
             c=clock;
-            MAP_PAR.SAVEMAP.name=sprintf('%d.%02d.%02d-%02d.%02d',c(1),c(2),c(3),c(4),c(5));
+            MAP_PAR.SAVEMAP.name=sprintf('%s(%d.%02d.%02d-%02d.%02d)',iso_par.ExpName,c(1),c(2),c(3),c(4),c(5));
             mkdir(MAP_PAR.SAVEMAP.name);
         end
         if (mod(MAP_PAR.SAVEMAP.tick,MAP_PAR.SAVEMAP.freq)==0)

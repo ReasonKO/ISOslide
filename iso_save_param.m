@@ -3,11 +3,12 @@ global iso_par
 global PAR
 global Modul
 if isfield(MAP_PAR,'SAVEMAP')
-    saveas(1001,[MAP_PAR.SAVEMAP.name,'/','GroupState','.png']);
-    saveas(201,[MAP_PAR.SAVEMAP.name,'/','UnitState','.png']);
-    saveas(202,[MAP_PAR.SAVEMAP.name,'/','ddot','.png']);
-    saveas(204,[MAP_PAR.SAVEMAP.name,'/','vLen','.png']);
-
+    for i=200:300
+        if ishandle(i)
+        saveas(i,[MAP_PAR.SAVEMAP.name,'/','data_',sprintf('%d',i),'.png']);
+            
+        end
+    end
     fid=fopen([MAP_PAR.SAVEMAP.name,'/','param.txt'],'wb');
     fwrite(fid,sprintf('iso_experiment : %s \n',MAP_PAR.SAVEMAP.name),'int16');    
     fwrite(fid,sprintf('---iso_par---\n'),'int16');

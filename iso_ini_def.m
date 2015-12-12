@@ -1,5 +1,16 @@
 %% НАСТРОЙКА ПАРАМЕТРОВ
+close all 
+clear all
+clc
+addpath('tools');
 global iso_par;
+
+iso_par.re_D=@(x,y)NAN;
+iso_par.Dynamic=[];
+iso_par.Rule=[];
+iso_par.AddViz=[];
+iso_par.ExpName='NoName';
+
 iso_par.Type2=0;
 iso_par.Type=7; %тип изолинии
 iso_par.d0d=400;   %Шарана коридора приследования
@@ -66,9 +77,13 @@ global Greens;   Greens=zeros(12,4);
 global Modul;
 Modul.Tend=2500; %Время работы
 Modul.dT=0.1;     %Щаг дискретизации
+Modul.freq=1;
+Modul.save_freq=1;
 Modul.Delay=0;  %Задержка
 Modul.l_wheel=100;
 Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;
+Modul.MAPviz=true;
+Modul.isoMAPviz=true;

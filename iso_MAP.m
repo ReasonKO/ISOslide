@@ -15,14 +15,14 @@ global PAR;
     [X,Y] = meshgrid(PAR.MAP_X/2*(-1:1/ISO_MAP_PAR.MAP_D:1),PAR.MAP_Y/2*(-1:1/ISO_MAP_PAR.MAP_D:1));
     Z=iso_D(X,Y);
 %% Отрисовка
-%      if isempty(ISO_MAP_PAR.viz_surf)
-%          figure(100)
-%          ISO_MAP_PAR.viz_surf=surf(X/100,Y/100,Z);
-%          %[~,ISO_MAP_PAR.viz_surf]=contourf(X,Y,Z);
-%          set(ISO_MAP_PAR.viz_surf, 'EdgeColor', 'none')
-%      else
-%          set(ISO_MAP_PAR.viz_surf,'zdata',Z);
-%      end
+     if isempty(ISO_MAP_PAR.viz_surf)
+         figure(100)
+         ISO_MAP_PAR.viz_surf=surf(X,Y,-Z);
+         %[~,ISO_MAP_PAR.viz_surf]=contourf(X,Y,Z);
+         set(ISO_MAP_PAR.viz_surf, 'EdgeColor', 'none')
+     else
+         set(ISO_MAP_PAR.viz_surf,'zdata',-Z);
+     end
      
     if (iso_par.dopisofieldMap)
         Zd=Z;
@@ -30,11 +30,11 @@ global PAR;
         Zd(Z>500)=NaN;
         Zd=-Zd+150;
         if ~isfield(ISO_MAP_PAR,'dopisofieldMap')
-            ISO_MAP_PAR.dopisofieldMap=surf(X/100,Y/100,Zd,'EdgeColor', 'none');
-            mycolor=[0.95,0.95,0.95;
-                    0.95,0.95,0.95;
-                    0 0 1;
-                    0 0 1];
+            ISO_MAP_PAR.dopisofieldMap=surf(X,Y,Zd,'EdgeColor', 'none');
+             mycolor=[0.95,0.95,0.95;
+                     0.95,0.95,0.95;
+                     0 0 1;
+                     0 0 1];
             colormap(mycolor);                    
         else
             set(ISO_MAP_PAR.dopisofieldMap,'zdata',Zd)
@@ -51,10 +51,10 @@ global PAR;
             Zisoline=[iso_par.d0,iso_par.d0+0];
         end
         if (iso_par.d0d2ison)
-        [C2,ISO_MAP_PAR.viz_cont2]=contour(X/100,Y/100,Z,Zisoline2,'B--');
+        [C2,ISO_MAP_PAR.viz_cont2]=contour(X,Y,Z,Zisoline2,'B--');
         set(ISO_MAP_PAR.viz_cont2,'LineWidth',1.5);
         end
-            [C,ISO_MAP_PAR.viz_cont]=contour(X/100,Y/100,Z,Zisoline,'B--');
+            [C,ISO_MAP_PAR.viz_cont]=contour(X,Y,Z,Zisoline,'B--');
             set(ISO_MAP_PAR.viz_cont,'LineWidth',1.5);
     else        
         if (iso_par.d0d2ison)

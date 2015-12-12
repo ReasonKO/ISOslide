@@ -187,35 +187,35 @@ end
 end
 
 %=========графики для каждого робота=======================================
-if ~isempty(Modul)
-    if (iso_par.VidVisible)
-        iso_save.sPmin=[iso_save.sPmin,Pmin];
-        if (Modul.N==1)
-            figure(1001);
-            title('???????? Pmin ??? ??????? ??????');
-            for i=1:N
-                subplot(floor((N-1)/4)+1,4,i)
-                ISO_VISION.vizPmin(i)=plot(0:Modul.N,iso_save.sPmin(i,:));
-            end
-        else
-            for i=1:N
-                set(ISO_VISION.vizPmin(i),'xdata',0:Modul.N,'ydata',iso_save.sPmin(i,:));
-            end
-        end
-    end
-    iso_save.sPmin=[iso_save.sPmin,Pmin];
-    if (Modul.N==1)
-        figure(1001);
-        for i=1:N
-            subplot(floor((N-1)/4)+1,4,i)
-%            ISO_VISION.vizPmin(i)=plot(0:Modul.N,iso_save.sPmin(i,:));
-        end
-    else
-        for i=1:N
-            set(ISO_VISION.vizPmin(i),'xdata',0:Modul.N,'ydata',iso_save.sPmin(i,:));
-        end
-    end
-end
+% if ~isempty(Modul)
+%     if (iso_par.VidVisible)
+%         iso_save.sPmin=[iso_save.sPmin,Pmin];
+%         if (Modul.N==1)
+%             figure(1001);
+%             title('???????? Pmin ??? ??????? ??????');
+%             for i=1:N
+%                 subplot(floor((N-1)/4)+1,4,i)
+%                 ISO_VISION.vizPmin(i)=plot(0:Modul.N,iso_save.sPmin(i,:));
+%             end
+%         else
+%             for i=1:N
+%                 set(ISO_VISION.vizPmin(i),'xdata',0:Modul.N,'ydata',iso_save.sPmin(i,:));
+%             end
+%         end
+%     end
+%     iso_save.sPmin=[iso_save.sPmin,Pmin];
+%     if (Modul.N==1)
+%         figure(1001);
+%         for i=1:N
+%             subplot(floor((N-1)/4)+1,4,i)
+% %            ISO_VISION.vizPmin(i)=plot(0:Modul.N,iso_save.sPmin(i,:));
+%         end
+%     else
+%         for i=1:N
+%             set(ISO_VISION.vizPmin(i),'xdata',0:Modul.N,'ydata',iso_save.sPmin(i,:));
+%         end
+%     end
+% end
 % %======Вывод в comand window (убрать ';')==================================
 % iso_save.kenem';
 % P;
@@ -224,6 +224,11 @@ end
 d_save=NaN*ones(1,N);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Управление для V
+d=NaN;
+d_dot=NaN;
+xi=NaN;
+U=NaN;
+Vreal=NaN;
 for i=1:N
     if (Robots(i,1)>0)  
 %-------------------- V
@@ -278,7 +283,7 @@ d_save(i)=d;
 %         end%-------------------- U
 %         
         if iso_par.smooth
-            U=U_*10*(d_dot+Vreal*xi);%/(iso_par.Sgrad*V_*Modul.dT);
+            U=U_*9*(d_dot+Vreal*xi);%/(iso_par.Sgrad*V_*Modul.dT);
             %cU=(d_dot+Vreal*xi)/(iso_par.Sgrad*max(Vreal,0.001));
             %U=U_*uslide*cU+dslide*U_*(cU-iso_save.Uold(i))/Modul.dT;
             %iso_save.SU(i)=0.9*iso_save.SU(i)+cU;
@@ -296,85 +301,31 @@ d_save(i)=d;
         iso_rules(i,:)=[V+U,V-U];
     end
 end
-%Robots_old=Robots;
-%=====================Графика==============================================
-if ~isempty(Modul)
-
-    global Save_iso;
-    if (Modul.N==1)
-        Save_iso.vLen=NaN*ones(N,Modul.Tend/Modul.dT);
-        Save_iso.ddot=NaN*ones(1,Modul.Tend/Modul.dT);
-        Save_iso.xi=NaN*ones(1,Modul.Tend/Modul.dT);
-        Save_iso.d=NaN*ones(1,Modul.Tend/Modul.dT);
-
-        Save_iso.Map_ddot=figure(201);
-        title('???????? d_{dot} ? Vreal*xi ??? ??????? ??????');
-        %subplot(2,1,1)
-        %legend('dt(d)/dt','Xi');
-        %plot([0,Modul.Tend/Modul.dT],Vreal*[iso_par.Sgrad,iso_par.Sgrad]);
-        hold on;
-        grid on;
-        %plot([0,Modul.Tend/Modul.dT],[0,0],'G');
-        %plot([0,Modul.Tend/Modul.dT],-Vreal*[iso_par.Sgrad,iso_par.Sgrad]);
-        Save_iso.P_ddot=plot(1,d_dot);
-        Save_iso.P_xi=plot(1,Vreal*xi,'R');
-        set(Save_iso.P_xi,'LineWidth',2);
-        %subplot(2,1,2)    
-        %plot([0,Modul.Tend/Modul.dT],[0,0],'G');
-        Save_iso.Map_ddot=figure(201);
-        hold all;
-        grid on;
-        
-        Save_iso.d=NaN*ones(N,Modul.Tend/Modul.dT);
-        for i=1:N
-            Save_iso.P_d(i)=plot(1,sqrt(d_save(i)/100),'R','LineWidth',2);     
-        end
-        ylabel('d, metres');
-        xlabel('t,seconds');
-        Save_iso.Map_Len=figure(204);
-        title('?????????? ?? ?????????? ?????? ?? ??????');
-        hold all;
-        for i=1:N
-            Save_iso.Map_Len(i)=plot(1,vizLength(i),'LineWidth',1);     
-        end
-        
-        Save_iso.P_d=plot(1,sqrt(d)/10,'R');     
-        ylabel('metres');
-        xlabel('seconds');
-        figure(112)
-        Save_iso.P_U=plot(1,U);
-        Save_iso.U=NaN*ones(1,Modul.Tend/Modul.dT);
-        Save_iso.U(1)=U/100;
-    else
-        Save_iso.U(Modul.N)=U/100;
-        Save_iso.ddot(Modul.N)=d_dot;
-        Save_iso.xi(Modul.N)=Vreal*xi;
-        for i=1:N
-            Save_iso.d(i,Modul.N)=d_save(i);%-iso_par.d0;
-            if (iso_par.TrackViz)
-                iso_par.TrackViz(i)=abs(d_save(i)-iso_par.d0)>10;
-            end
-            Save_iso.vLen(i,Modul.N)=vizLength(i);
-        end        
-    end
-    if (ishandle(Save_iso.Map_ddot) && isequal('on',get(Save_iso.Map_ddot,'Visible')))        
-        set(Save_iso.P_ddot,'xdata',1:Modul.Tend/Modul.dT,'ydata', Save_iso.ddot);
-        set(Save_iso.P_xi  ,'xdata',1:Modul.Tend/Modul.dT,'ydata',-Save_iso.xi  );
-        for i=1:N
-%            set(Save_iso.P_d(i) ,'xdata',(1:Modul.Tend/Modul.dT)*Modul.dT,'ydata',(Save_iso.d(i,:)/100)  );
-        end
-        for i=1:N
-            set(Save_iso.Map_Len(i) ,'xdata',(1:Modul.Tend/Modul.dT)*Modul.dT,'ydata',(Save_iso.vLen(i,:)/100)  );
-        end
-        Save_iso.d(Modul.N)=d_clear;%-iso_par.d0;
-%    end
-%    if (ishandle(Save_iso.Map_ddot) && isequal('on',get(Save_iso.Map_ddot,'Visible')))
-        %set(Save_iso.P_ddot,'xdata',1:Modul.Tend/Modul.dT,'ydata', Save_iso.ddot);
-        %set(Save_iso.P_xi  ,'xdata',1:Modul.Tend/Modul.dT,'ydata',-Save_iso.xi  );
-    %    set(Save_iso.P_d   ,'xdata',1:Modul.Tend/Modul.dT,'ydata',sqrt(Save_iso.d)/10  );
-    %    set(Save_iso.P_U   ,'xdata',1:Modul.Tend/Modul.dT,'ydata',Save_iso.U/100);
-
-        drawnow
-    end
+%% Графика
+global Save_iso;
+if (Modul.N==1)
+    figure(201)
+    Save_iso.plot_d=plot(NaN,NaN,'K','LineWidth',1);
+    hold on
+    %Save_iso.plot_d2=plot(NaN,NaN,'B','LineWidth',1);
+    Save_iso.plot_d0=plot(NaN,NaN,'R','LineWidth',2);
+    title('d & d0');
+    figure(202)
+    Save_iso.plot_dd=plot(NaN,NaN,'K','LineWidth',1);
+    hold on
+    Save_iso.plot_sgrad=plot(NaN,NaN,'R','LineWidth',2);
+    title('d'' & \chi');
+    figure(202)
+    Save_iso.plot_u=plot(NaN,NaN,'K','LineWidth',1);
+    title('u');
+    figure(100);
 end
+addPlotData(Save_iso.plot_d,d);
+addPlotData(Save_iso.plot_d0,iso_par.d0);
+
+addPlotData(Save_iso.plot_dd,d_dot);
+addPlotData(Save_iso.plot_sgrad,Vreal*xi);
+
+addPlotData(Save_iso.plot_u,U);
+%Robots_old=Robots;
 end

@@ -6,7 +6,7 @@ function re=MOD_GO(X,Xang,Rul)
 %% Инициализация параметров
 global Modul;
 dT=Modul.dT;
-l=Modul.l_wheel;
+l=Modul.l_wheel/20;
 viz=Modul.viz;
 
 global treckcolor; %Цвет трека
@@ -15,8 +15,8 @@ if (size(treckcolor)==[0,0])
 end
 
 %%
-Left=Rul(1);
-Right=Rul(2);
+Left=Rul(1)/100;
+Right=Rul(2)/100;
 
 if (Left==Right)
     Xn=X+dT*Left*[cos(Xang),sin(Xang)];

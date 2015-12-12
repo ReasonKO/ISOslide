@@ -15,6 +15,7 @@ $RECYCLE.BIN/
 *.txt
 *.msp
 *.png
+*.rar
 
 # Windows shortcuts
 *.lnk

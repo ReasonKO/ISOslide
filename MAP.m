@@ -8,14 +8,14 @@ global Blues Yellows Balls Greens;
 if (isfield(MAP_PAR,'MAP_H') && ishandle(MAP_PAR.MAP_H) && isequal('on',get(MAP_PAR.MAP_H,'Visible')))
 %% BEGIN 
 
-MAP_l=300;
+MAP_l=20;
 for MAP_i=1:size(Blues,1)
     if ~(iso_par.dopisofieldMap)
         if (Blues(MAP_i,1)>0)
-            viz_x=Blues(MAP_i,2)/100;
-            viz_y=Blues(MAP_i,3)/100;
-            viz_angx=[Blues(MAP_i,2),Blues(MAP_i,2)+MAP_l*cos(Blues(MAP_i,4))]/100;
-            viz_angy=[Blues(MAP_i,3),Blues(MAP_i,3)+MAP_l*sin(Blues(MAP_i,4))]/100;
+            viz_x=Blues(MAP_i,2);
+            viz_y=Blues(MAP_i,3);
+            viz_angx=[Blues(MAP_i,2),Blues(MAP_i,2)+MAP_l*cos(Blues(MAP_i,4))];
+            viz_angy=[Blues(MAP_i,3),Blues(MAP_i,3)+MAP_l*sin(Blues(MAP_i,4))];
             if (isempty(MAP_PAR.viz_Blues{MAP_i}))
                 figure(100)
                 MAP_PAR.viz_Blues{MAP_i}(1)=plot(viz_x,viz_y,'B.','MarkerSize',15);        
@@ -31,10 +31,10 @@ for MAP_i=1:size(Blues,1)
 end    
 for MAP_i=1:size(Yellows,1)
     if (Yellows(MAP_i,1)>0)
-        viz_x=Yellows(MAP_i,2)/100;
-        viz_y=Yellows(MAP_i,3)/100;
-        viz_angx=[Yellows(MAP_i,2),Yellows(MAP_i,2)+MAP_l*cos(Yellows(MAP_i,4))]/100;
-        viz_angy=[Yellows(MAP_i,3),Yellows(MAP_i,3)+MAP_l*sin(Yellows(MAP_i,4))]/100;
+        viz_x=Yellows(MAP_i,2);
+        viz_y=Yellows(MAP_i,3);
+        viz_angx=[Yellows(MAP_i,2),Yellows(MAP_i,2)+MAP_l*cos(Yellows(MAP_i,4))];
+        viz_angy=[Yellows(MAP_i,3),Yellows(MAP_i,3)+MAP_l*sin(Yellows(MAP_i,4))];
         if (isempty(MAP_PAR.viz_Yellows{MAP_i}))
             figure(100)
             if (MAP_i<=iso_par.Nagent-iso_par.Nagent2)
@@ -42,7 +42,7 @@ for MAP_i=1:size(Yellows,1)
                 MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);   
                 MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'R-','LineWidth',2);            
             else
-                MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'G.','MarkerSize',25);   
+                MAP_PAR.viz_Yellows{MAP_i}(1)=plot3(viz_x,viz_y,1,'G.','MarkerSize',25);   
                 MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);   
                 MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'G-','LineWidth',2);            
             end
