@@ -228,14 +228,21 @@ global exp3_data
 if ~isfield(exp3_data,'rule_data');
 exp3_data.rule_data.P_mod=zeros(N,1);
 exp3_data.rule_data.P_d_star=NaN*ones(N,1);
-exp3_data.rule_data.P_p_star=zeros(N,1);
+exp3_data.rule_data.P_p_star=NaN*ones(N,1);
 exp3_data.rule_data.pold=NaN*ones(N,1);
+exp3_data.rule_data.Cmod=zeros(N,1);
+%exp3_data.rule_data.Pdes=NaN*ones(N,1);
 end
 P_mod=exp3_data.rule_data.P_mod;
 P_d_star=exp3_data.rule_data.P_d_star;
 P_p_star=exp3_data.rule_data.P_p_star;
 pold=exp3_data.rule_data.pold;
+Cmod=exp3_data.rule_data.Cmod;
+%Pdes=exp3_data.rule_data.Pdes;
 %% Управление для V
+A2=1.01;
+dD=3;%0.5;
+
 for i=1:N
     if (Robots(i,1)>0)  
 %-------------------- V
@@ -266,32 +273,52 @@ for i=1:N
         % B==1
         % A==2  
 
-        if (P_mod(i)==0) && (p<iso_par.d0+iso_par.d0d) && (p_dot<0)
+        if (P_mod(i)==0) && (p<iso_par.d0) && (p_dot<0)
             P_mod(i)=1;
             P_d_star(i)=d;
             P_p_star(i)=p;
         else
-            if (P_mod(i)==1) && (d>P_d_star(i)) && (abs(d_dot)<0.01)
+            if ((P_mod(i)==1)||(P_mod(i)==A2)) && (d>P_d_star(i)+1) && (abs(d_dot)<0.01)% && (d_dot>0)
                 P_d_star(i)=d;
                 P_mod(i)=2;
+                Cmod=0;
             else
-                if (P_mod(i)==2) && (p<P_p_star(i))&& (d<P_d_star(i)-0.5)
-                    P_mod(i)=1;
+                if (P_mod(i)==2) && (Cmod)%% (p<=P_p_star(i)-0.1)%&& 
+                    if ~isnan(P_p_star(i))
+                        P_mod(i)=A2;
+                    else
+                        P_mod(i)=1;
+                    end
                 end
-                if (P_mod(i)==2) && (d>P_d_star(i)+0.5) && (d_dot>0.01)
+                if (P_mod(i)==2) && (d>=P_d_star(i)+dD) && (d_dot>=-0.01)
                     P_mod(i)=0;
                     P_d_star(i)=NaN;
+                    P_p_star(i)=NaN;
                 end
             end
         end
 
+%        if P_mod(i)==2
+%            P_d_star(i)=d;
+%        end
+       if d<P_d_star(i)-dD
+           Cmod=1;
+       end
+       if  P_mod(i)==1
+           P_p_star(i)=p;
+           if (p_dot>-0.01)
+               P_mod(i)=A2;
+           end                   
+       end
 
+               
         if (P_mod(i)==0)
             xi=0.9;
             Uarg=d_dot-Vreal*xi;    
         end
-        if (P_mod(i)==1)
-            xi_=(p-iso_par.d0)/iso_par.d0d;
+        if ((P_mod(i)==1)||(P_mod(i)==A2))
+            xi_=(p-P_p_star(i))/iso_par.d0d;
+            %%xi_=(p-iso_par.d0)/iso_par.d0d;
             xi=sign(xi_)*min(1,abs(xi_))*iso_par.Sgrad;            
             Uarg=p_dot+Vreal*xi;        
         end
@@ -319,6 +346,9 @@ exp3_data.rule_data.P_mod=P_mod;
 exp3_data.rule_data.P_d_star=P_d_star;
 exp3_data.rule_data.P_p_star=P_p_star;
 exp3_data.rule_data.pold=pold;
+exp3_data.rule_data.Cmod=Cmod;
+%exp3_data.rule_data.Pdes=Pdes;
+
 %% Графика
 global Save_iso;
 if (Modul.N==3)
@@ -327,9 +357,9 @@ if (Modul.N==3)
     Save_iso.plot_p=plot(0,p,'K','LineWidth',1);
     hold on
     %Save_iso.plot_d2=plot(NaN,NaN,'B','LineWidth',1);
-    Save_iso.plot_d0=plot(0,iso_par.d0,'R','LineWidth',2);
-    Save_iso.plot_p02=plot(0,iso_par.d0+iso_par.d0d,'R--','LineWidth',2);
-    legend('p','p_{sw}','p_{des}','Location','NorthWest');
+    Save_iso.plot_d0=plot(0,P_p_star(i),'R','LineWidth',2);
+    Save_iso.plot_p02=plot(0,iso_par.d0,'R--','LineWidth',2);
+    legend('p','p_{des}','p_{sw}','Location','NorthWest');
     title('p & p0');
     
     figure(202)
@@ -360,12 +390,14 @@ if (Modul.N==3)
     Save_iso.plot_d=plot(0,d,'K','LineWidth',1);
     legend('max','d_*','d','Location','NorthWest');
     title('max, d_* & d');
-    figure(100);
+    figure(206)
+    Save_iso.plot_p_dot=plot(0,p_dot,'B','LineWidth',2);
+    figure(100);    
 end
 if (Modul.N>=3)
 addPlotData(Save_iso.plot_p,p);
-addPlotData(Save_iso.plot_d0,iso_par.d0);
-addPlotData(Save_iso.plot_p02,iso_par.d0+iso_par.d0d);
+addPlotData(Save_iso.plot_d0,P_p_star(i));
+addPlotData(Save_iso.plot_p02,iso_par.d0);
 
 addPlotData(Save_iso.plot_dd,d_dot);
 addPlotData(Save_iso.plot_sgrad,Vreal*0.9);
@@ -377,6 +409,8 @@ addPlotData(Save_iso.plot_d_zero,exp3_data.Cv);
 addPlotData(Save_iso.plot_u,U/500);
 
 addPlotData(Save_iso.plot_mod,P_mod(1));
+
+addPlotData(Save_iso.plot_p_dot,p_dot);
 end
 %Robots_old=Robots;
 

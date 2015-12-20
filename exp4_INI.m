@@ -5,13 +5,13 @@ global exp3_data field
 
 %%
 global iso_par;
-iso_par.d0d=10;   %Шарана коридора присоедования
+iso_par.d0d=5;   %Шарана коридора присоедования
 iso_par.error=0.0;    %Ошибка датчика в %
 iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
 iso_par.Nagent=1;%12  %Кол-во агентов
-iso_par.smooth=1;   %*гладкий режим*
+iso_par.smooth=0;   %*гладкий режим*
 
 iso_par.ExpName='Dynamic';
 iso_par.re_D=@(x,y)exp3_reD(x,y);
@@ -29,7 +29,7 @@ iso_par.Rd_vision=0.9*iso_par.R_vision/iso_par.Nagent; % Радиус ближайших
 iso_par.e=(iso_par.Vmax-iso_par.Vmin)/iso_par.Nagent/50;  %коэфициент замедления для ряда ближайших
 
 iso_par.TracksVizual=1; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до выхода на изолинию)
-iso_par.TracksTime=200; %Затирание трека спустя iso_par.TracksTime отрисовок
+iso_par.TracksTime=inf; %Затирание трека спустя iso_par.TracksTime отрисовок
 iso_par.TracksColor=[1,0,0];
 
 iso_par.TripleIsoline=false;
@@ -79,7 +79,7 @@ field.Xm{2}=+L*cos(ang)+H*cos(ang+pi/2);
 field.Ym{2}=L*sin(ang)+H*sin(ang+pi/2);
 field.Zm{2}=ones(size(L));
 
-[R,ang]=meshgrid(35:1:40,-pi/4+(-pi:pi/20:pi/2));
+[R,ang]=meshgrid(35:1:40,-pi/4+(-pi:pi/100:pi/2));
 field.Xm{3}=R.*cos(ang+pi/4);
 field.Ym{3}=R.*sin(ang+pi/4);
 field.Zm{3}=ones(size(R));
@@ -87,11 +87,11 @@ field.Zm{3}=ones(size(R));
 exp3_data.field_save=field;
 field.Ym{3}=field.Ym{3}-120;
 field.Ym{2}=field.Ym{2}-20;
-field.Ym{1}=field.Ym{1}+90;
+field.Ym{1}=field.Ym{1}+90;% load('M2');
+% Modul.N=0;
+% exp3_data.P_H=[];
+
 %%     
-%load('M4');
-%Modul.N=0;
-%exp3_data.P_H=[];
 
 MAP_INI
 figure(100)

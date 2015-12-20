@@ -8,8 +8,8 @@ exp3_data.error=0.1;    %Ошибка датчика в %
 
 %%
 global iso_par;
-iso_par.d0d=10;   %Шарана коридора присоедования
-iso_par.error=0;%0.01/0.15;    %Ошибка датчика в %
+iso_par.d0d=5;   %Шарана коридора присоедования
+iso_par.error=0.02;%/0.15;    %Ошибка датчика в %
 iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
@@ -101,7 +101,7 @@ field.Zm{3}=ones(size(L));
 % field.Ym{5}=50+R.*sin(ang+pi/4)-R.*cos(ang+pi/4);
 % field.Zm{5}=ones(size(R));
 
-[R,ang]=meshgrid(35:1:40,-pi/4+(-pi:pi/20:pi/2));
+[R,ang]=meshgrid(35:1:40,-pi/4+(-pi:pi/50:pi/2));
 field.Xm{5}=0+R.*cos(ang+pi/4);
 field.Ym{5}=50+R.*sin(ang+pi/4);
 field.Zm{5}=ones(size(R));
@@ -127,6 +127,10 @@ field.Xm{6}=-20-H-L;
 field.Ym{6}=-150-L+H;
 field.Zm{6}=ones(size(L));
 %%     
+% load('M');
+% Modul.N=0;
+% exp3_data.P_H=[];
+
 MAP_INI
 figure(100)
 axis([-300,100,-200,150]);

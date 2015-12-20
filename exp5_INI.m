@@ -1,9 +1,12 @@
 iso_ini_def
 global exp3_data field
 
+
+exp3_data.C=[-90,-5];
+
 %%
 global iso_par;
-iso_par.d0d=10;   %Шарана коридора присоедования
+iso_par.d0d=5;   %Шарана коридора присоедования
 iso_par.error=0.0;    %Ошибка датчика в %
 iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
@@ -12,6 +15,9 @@ iso_par.Nagent=1;%12  %Кол-во агентов
 iso_par.smooth=0;   %*гладкий режим*
 iso_par.ExpName='Bublic';
 
+
+%iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/200^2+(exp3_data.C(2)-y).^2/100^2));
+%iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/300^2+(exp3_data.C(2)-y).^2/300^2));
 iso_par.re_D=@(x,y)exp3_reD(x,y);
 iso_par.Dynamic=@exp3_dynamic;
 iso_par.AddViz=[];
@@ -62,8 +68,7 @@ Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;
 %% 
-Yellows(1,:)=[1,150,-150,0];
-exp3_data.C=[-90,-5];
+Yellows(1,:)=[1,100,-100,0];
 exp3_data.Cv=1000;
 
 [ang,h]=meshgrid([-2.45*pi:pi/30:-pi/3,-pi/3:pi/100:pi/3,pi/3:pi/30:(2.45*pi)],-3:3);
@@ -72,6 +77,9 @@ exp3_data.Cv=1000;
 field.Xm{1}=7*exp(15./(abs(ang)+1.55*pi)).*sin(sign(ang)*1.8*pi+ang)+3*cos(h)+90*sign(ang);
 field.Ym{1}=7*exp(15./(abs(ang)+1.55*pi)).*cos(sign(ang)*1.8*pi+ang)+3*sin(h);
 field.Zm{1}=ones(size(ang));
+% field.Xm{1}=[1,1;1,1];
+% field.Ym{1}=[1,1;1,1];
+% field.Zm{1}=[1,1;1,1];
 
 %%     
 MAP_INI
