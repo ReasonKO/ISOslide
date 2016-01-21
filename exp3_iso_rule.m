@@ -395,22 +395,22 @@ if (Modul.N==3)
     figure(100);    
 end
 if (Modul.N>=3)
-% addPlotData(Save_iso.plot_p,p);
-% addPlotData(Save_iso.plot_d0,P_p_star(i));
-% addPlotData(Save_iso.plot_p02,iso_par.d0);
-% 
-% addPlotData(Save_iso.plot_dd,d_dot);
-% addPlotData(Save_iso.plot_sgrad,Vreal*0.9);
-% 
-% addPlotData(Save_iso.plot_d_star,P_d_star(1));
-% addPlotData(Save_iso.plot_d,d);
-% addPlotData(Save_iso.plot_d_zero,exp3_data.Cv);
-% 
-% addPlotData(Save_iso.plot_u,U/500);
-% 
-% addPlotData(Save_iso.plot_mod,P_mod(1));
-% 
-% addPlotData(Save_iso.plot_p_dot,p_dot);
+addPlotData(Save_iso.plot_p,p);
+addPlotData(Save_iso.plot_d0,P_p_star(i));
+addPlotData(Save_iso.plot_p02,iso_par.d0);
+
+addPlotData(Save_iso.plot_dd,d_dot);
+addPlotData(Save_iso.plot_sgrad,Vreal*0.9);
+
+addPlotData(Save_iso.plot_d_star,P_d_star(1));
+addPlotData(Save_iso.plot_d,d);
+addPlotData(Save_iso.plot_d_zero,exp3_data.Cv);
+
+addPlotData(Save_iso.plot_u,U/500);
+
+addPlotData(Save_iso.plot_mod,P_mod(1));
+
+addPlotData(Save_iso.plot_p_dot,p_dot);
 end
 %Robots_old=Robots;
 

@@ -84,6 +84,6 @@ Modul.l_wheel=100;
 Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
-Modul.SaveExp=1;
+Modul.SaveExp=true;
 Modul.MAPviz=true;
 Modul.isoMAPviz=true;
