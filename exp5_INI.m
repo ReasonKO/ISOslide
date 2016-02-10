@@ -68,7 +68,7 @@ Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;
 %% 
-Yellows(1,:)=[1,100,-100,0];
+Yellows(1,:)=[1,100,-80,0];
 exp3_data.Cv=1000;
 
 [ang,h]=meshgrid([-2.45*pi:pi/30:-pi/3,-pi/3:pi/100:pi/3,pi/3:pi/30:(2.45*pi)],-3:3);
@@ -85,8 +85,8 @@ field.Zm{1}=ones(size(ang));
 MAP_INI
 figure(100)
 axis([-200,200,-200,200]);
-hold on
 exp3_ADDviz
+hold on
 plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);
 plot(exp3_data.C(1),exp3_data.C(2),'Go');%,'MarkerSize',25);
 MAP

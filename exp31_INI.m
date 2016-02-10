@@ -58,7 +58,7 @@ global Modul;
 
 Modul.Tend=10000; %Время работы
 Modul.dT=0.1;     %Щаг дискретизации
-Modul.freq=10;
+Modul.freq=15;
 Modul.Delay=0;  %Задержка
 Modul.l_wheel=100;
 Modul.T=0;
