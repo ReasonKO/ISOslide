@@ -46,7 +46,7 @@ Yz=Y(layer);
 d=Dmin;
 Ind=Iopt;
 global iso_par
-d=d+iso_par.d0*(0.01*randn(1,1)*iso_par.error);
+d=d+iso_par.d0*(0.01*randn(1,1)*iso_par.error_P);
 if (d==inf)
     return
 end

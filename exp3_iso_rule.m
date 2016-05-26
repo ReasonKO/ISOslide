@@ -251,6 +251,11 @@ for i=1:N
 
         iso_save.Vreal_old(i)=norm(Robots(i,2:3)-iso_save.Robots_old(i,2:3),2);
         iso_save.Robots_old(i,:)=Robots(i,:);
+        global Vreal_filt
+        if isempty(Vreal_filt)
+            Vreal_filt=Vreal;
+        end
+        Vreal_filt=(Vreal_filt+Vreal)/2;
 %-------------------- d_dot
 
         d=iso_D(Robots(i,2),Robots(i,3));
@@ -306,7 +311,7 @@ for i=1:N
        end
        if  P_mod(i)==1
            P_p_star(i)=p;
-           if (p_dot>-0.01)
+           if (p_dot>-0.05)
                P_mod(i)=A2;
            end                   
        end
@@ -336,6 +341,7 @@ for i=1:N
             U=U_*sign(Uarg);
         end
         iso_save.Uold(i)=U;
+        U=U+randn(1,1)*iso_par.error_U*500;
 %-------------------- rule
         iso_rules(i,:)=[V+U,V-U];
     end
@@ -392,6 +398,7 @@ if (Modul.N==3)
     title('max, d_* & d');
     figure(206)
     Save_iso.plot_p_dot=plot(0,p_dot,'B','LineWidth',2);
+    legend('p''','Location','NorthWest');
     figure(100);    
 end
 if (Modul.N>=3)
@@ -399,8 +406,8 @@ addPlotData(Save_iso.plot_p,p);
 addPlotData(Save_iso.plot_d0,P_p_star(i));
 addPlotData(Save_iso.plot_p02,iso_par.d0);
 
-addPlotData(Save_iso.plot_dd,d_dot);
-addPlotData(Save_iso.plot_sgrad,Vreal*0.9);
+addPlotData(Save_iso.plot_dd,d_dot/Vreal);
+addPlotData(Save_iso.plot_sgrad,0.9);
 
 addPlotData(Save_iso.plot_d_star,P_d_star(1));
 addPlotData(Save_iso.plot_d,d);

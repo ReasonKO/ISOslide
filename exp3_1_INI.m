@@ -9,7 +9,9 @@ exp3_data.error=0.1;    %Ошибка датчика в %
 %%
 global iso_par;
 iso_par.d0d=5;   %Шарана коридора присоедования
-iso_par.error=0.05;%/0.15;    %Ошибка датчика в %
+iso_par.error_U=0.05;
+iso_par.error_P=0.3;
+iso_par.error=0.03;%/0.15;    %Ошибка датчика в %
 iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
@@ -78,7 +80,7 @@ field.Zm{1}=Z;
 
 [R,ang]=meshgrid(0:10:20,-pi:pi/30:pi);
 field.Xm{2}=-130+2*R.*cos(ang);
-field.Ym{2}=-130+R.*sin(ang);
+field.Ym{2}=-140+R.*sin(ang);
 field.Zm{2}=ones(size(R));
 
 [L,H]=meshgrid(0:2:150,-10:10:10);
