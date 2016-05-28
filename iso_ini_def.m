@@ -1,6 +1,6 @@
 %% НАСТРОЙКА ПАРАМЕТРОВ
 close all 
-clear all
+%clear all
 clc
 addpath('tools');
 global iso_par;
@@ -41,6 +41,7 @@ iso_par.Fi_vision=0.5*pi/2; %Угол видимости робота
 iso_par.Rd_vision=0.9*iso_par.R_vision/iso_par.Nagent; % Радиус ближайших
 iso_par.e=(iso_par.Vmax-iso_par.Vmin)/iso_par.Nagent/50;  %коэфициент замедления для ряда ближайших
 % ???
+iso_par.DataGraph=0;
 iso_par.outsidespawn=NaN;
 iso_par.VidVisible=true;
 iso_par.SectorVisual=0;%Визуализация сектора видимости

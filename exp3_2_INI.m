@@ -1,6 +1,3 @@
-clear all
-close all
-iso_ini_def
 
 global exp3_data field
 exp3_data.error=0.1;    %Ошибка датчика в %
@@ -10,9 +7,9 @@ iso_par.VidVisible=false;
 %%
 global iso_par;
 iso_par.d0d=5;   %Шарана коридора присоедования
-iso_par.error_U=0.05;
-iso_par.error_P=0.3;
-iso_par.error=0.03;%/0.15;    %Ошибка датчика в %
+iso_par.error_U=0.02;
+iso_par.error_P=0.1;
+iso_par.error=0.01;%/0.15;    %Ошибка датчика в %
 iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
@@ -37,6 +34,7 @@ iso_par.e=(iso_par.Vmax-iso_par.Vmin)/iso_par.Nagent/50;  %коэфициент замедления
 iso_par.TracksVizual=1; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до выхода на изолинию)
 iso_par.TracksTime=inf; %Затирание трека спустя iso_par.TracksTime отрисовок
 iso_par.TracksColor=[1,0,0];
+iso_par.DataGraph=0;
 
 iso_par.TripleIsoline=false;
 global treckcolor;
@@ -52,11 +50,6 @@ PAR.KICK_DIST=150;
 global MODUL_ON; MODUL_ON=1;
 global iso_MODUL_ON; iso_MODUL_ON=1; 
 
-global Rules;    Rules=zeros(12,7);
-global Balls;    Balls=zeros(1,3);
-global Blues;    Blues=zeros(12,4);
-global Yellows;  Yellows=zeros(12,4);
-
 global Modul;
 
 Modul.Tend=10000; %Время работы
@@ -67,9 +60,9 @@ Modul.l_wheel=100;
 Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
-Modul.SaveExp=1;
+Modul.SaveExp=0;
+Modul.isoMAPviz=0;
 %% 
-Yellows(1,:)=[1,-250,-150,0];
 exp3_data.C=[70,70];
 exp3_data.Cv=1000;
 
@@ -79,12 +72,12 @@ field.Xm{1}=X;
 field.Ym{1}=Y-20;
 field.Zm{1}=Z;
 
-[R,ang]=meshgrid(0:10:20,-pi:pi/30:pi);
+[R,ang]=meshgrid(0:1:20,-pi:pi/30:pi);
 field.Xm{2}=-130+2*R.*cos(ang);
 field.Ym{2}=-140+R.*sin(ang);
 field.Zm{2}=ones(size(R));
 
-[L,H]=meshgrid(0:2:150,-10:10:10);
+[L,H]=meshgrid(0:2:150,-10:1:10);
 field.Xm{3}=-220+L-H-L/10;
 field.Ym{3}=-100+L+H;
 field.Zm{3}=ones(size(L));
@@ -114,7 +107,7 @@ field.Zm{5}=ones(size(R));
 % field.Ym{7}=-110-H;
 % field.Zm{7}=ones(size(L));
 
-[R,ang]=meshgrid(55:5:60,0.9425+(-pi/2:pi/8:pi*3/5));
+[R,ang]=meshgrid(55:5:60,0.9425+(-pi/2:pi/24:pi*3/5));
 field.Xm{8}=-180+R.*cos(ang+pi/4);
 field.Ym{8}=30+R.*sin(ang+pi/4);
 field.Zm{8}=ones(size(R));
@@ -133,9 +126,10 @@ field.Zm{6}=ones(size(L));
 % load('M');
 % Modul.N=0;
 % exp3_data.P_H=[];
-
+return
 MAP_INI
 figure(100)
+clf
 axis([-300,100,-200,150]);
 hold on
 exp3_ADDviz
@@ -143,5 +137,5 @@ plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);
 plot(exp3_data.C(1),exp3_data.C(2),'Go');%,'MarkerSize',25);
 MAP
 %% RUN
-%return
+return
 MODUL

@@ -356,6 +356,7 @@ exp3_data.rule_data.Cmod=Cmod;
 %exp3_data.rule_data.Pdes=Pdes;
 
 %% Графика
+if iso_par.DataGraph
 global Save_iso;
 if (Modul.N==3)
     
@@ -420,5 +421,5 @@ addPlotData(Save_iso.plot_mod,P_mod(1));
 addPlotData(Save_iso.plot_p_dot,p_dot);
 end
 %Robots_old=Robots;
-
+end
 end
