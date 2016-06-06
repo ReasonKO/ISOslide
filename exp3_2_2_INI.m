@@ -63,7 +63,9 @@ Modul.viz=0;
 Modul.SaveExp=0;
 Modul.isoMAPviz=0;
 %% 
-exp3_data.C=[70,70];
+
+Yellows(1,:)=[1,-250,-150,0];
+%exp3_data.C=[70,70];
 exp3_data.Cv=1000;
 
 [X,Y]=meshgrid(-60:60,-40:20);
@@ -126,7 +128,7 @@ field.Zm{6}=ones(size(L));
 % load('M');
 % Modul.N=0;
 % exp3_data.P_H=[];
-
+return
 MAP_INI
 figure(100)
 clf

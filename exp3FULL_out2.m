@@ -1,7 +1,7 @@
 
-N___=5751;
+N___=121;
 for countexp3=1:N___
-   S{countexp3}=load(sprintf('exp3FULL3\\exp3_r_%d',countexp3));
+   S{countexp3}=load(sprintf('exp3FULL4\\exp3_r_%d',countexp3));
 end
 clear T C SS
 figure(999)
@@ -15,7 +15,7 @@ end
 
 for countexp3=1:N___
 SS=S{countexp3};
-C(countexp3,1:2)=SS.StartCoor(2:3);
+C(countexp3,1:2)=SS.StartCoor(1:2);
 if isfield(SS.Modul,'Tsave')
 T(countexp3)=SS.Modul.Tsave;
 else
@@ -43,10 +43,10 @@ Cc=mycolor(:);
 %Cy=C(valid,2);
 %Cc=mycolor(valid);
 N=size(Cc,1)*size(Cc,2);
-
-Cx=reshape(Cx,71,N___/71);
-Cy=reshape(Cy,71,N___/71);
-Cc=reshape(Cc,71,N___/71);
+p=11
+Cx=reshape(Cx,p,N___/p);
+Cy=reshape(Cy,p,N___/p);
+Cc=reshape(Cc,p,N___/p);
 p=pcolor(Cx,Cy,Cc)
 set(p,'EdgeColor','none');
 [X____,Y____]=meshgrid([-300:5:100],[-200:5:150]);

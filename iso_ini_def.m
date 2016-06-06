@@ -4,6 +4,8 @@ close all
 clc
 addpath('tools');
 global iso_par;
+iso_par.error_P=0;
+iso_par.error_U=0;
 
 iso_par.re_D=@(x,y)NAN;
 iso_par.Dynamic=[];
