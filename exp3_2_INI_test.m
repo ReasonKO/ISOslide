@@ -1,9 +1,10 @@
-
+clear all
+iso_ini_def
 global exp3_data field
 exp3_data.error=0.1;    %Ошибка датчика в %
 
 
-iso_par.VidVisible=false;
+%iso_par.VidVisible=false;
 %%
 global iso_par;
 iso_par.d0d=5;   %Шарана коридора присоедования
@@ -129,7 +130,7 @@ field.Zm{6}=ones(size(L));
 % exp3_data.P_H=[];
 
 Yellows(1,:)=[1,-250,-150,0];
-exp3_data.C=[-3,117];
+exp3_data.C=[-87,-77];
 
 MAP_INI
 figure(100)
@@ -141,5 +142,4 @@ plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);
 plot(exp3_data.C(1),exp3_data.C(2),'Go');%,'MarkerSize',25);
 MAP
 %% RUN
-return
 MODUL

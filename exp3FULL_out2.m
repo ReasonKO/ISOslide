@@ -1,8 +1,8 @@
+N___=5751;
 
-N___=121;
-for countexp3=1:N___
-   S{countexp3}=load(sprintf('exp3FULL4\\exp3_r_%d',countexp3));
-end
+% for countexp3=1:N___
+%     S{countexp3}=load(sprintf('exp3FULL4\\exp3_r_%d',countexp3));
+%  end
 clear T C SS
 figure(999)
 clf
@@ -23,8 +23,8 @@ T(countexp3)=99999;
 end
 end
 
-valid=and(~isnan(T),~isinf(T));
-Tmax=2500;%max(T(valid));
+valid=and(and(~isnan(T),~isinf(T)),T<99999);
+Tmax=3000;%2500;%max(T(valid));
 clear mycolor
 for i=1:N___
     if valid(i)
@@ -43,7 +43,7 @@ Cc=mycolor(:);
 %Cy=C(valid,2);
 %Cc=mycolor(valid);
 N=size(Cc,1)*size(Cc,2);
-p=11
+p=71
 Cx=reshape(Cx,p,N___/p);
 Cy=reshape(Cy,p,N___/p);
 Cc=reshape(Cc,p,N___/p);

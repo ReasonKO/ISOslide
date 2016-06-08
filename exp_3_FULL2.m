@@ -1,10 +1,10 @@
 global Yellows
 clear all
 %[X____,Y____]=meshgrid([-300:5:100],[-200:5:150]);
-[X____,Y____]=meshgrid([50:5:100],[50:5:100]);
+[X____,Y____]=meshgrid([-300:5:100],[-200:5:150]);
 
 N____=size(X____,1)*size(X____,2);
-for countexp3=50:N____
+for countexp3=1:N____
 global Modul exp3_data Save_iso ISO_VISION iso_save iso_par MAP_PAR field PAR
 Modul=[]
 exp3_data=[] 
