@@ -1,0 +1,5 @@
+global Yellows iso_par exp6_data
+for i=1:iso_par.Nagent
+    Yellows(i,2:3)=Yellows(i,2:3)
+end
+exp6_data

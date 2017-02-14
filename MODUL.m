@@ -16,8 +16,10 @@ while(Modul.T+Modul.dT<=Modul.Tend )
     %----------------------------------------------------------------------
     Modul.N=Modul.N+1;
     Modul.T=Modul.T+Modul.dT;    
+    Modul.PlotPulse=mod(Modul.N,floor(Modul.freq/Modul.dT))==0;
+
     iso_main; 
-    if mod(Modul.N,floor(Modul.freq/Modul.dT))==0 
+    if Modul.PlotPulse
         if Modul.isoMAPviz
                 iso_MAP();
         end
