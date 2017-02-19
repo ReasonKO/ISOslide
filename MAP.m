@@ -38,11 +38,11 @@ for MAP_i=1:size(Yellows,1)
         if (isempty(MAP_PAR.viz_Yellows{MAP_i}))
             figure(100)
             if (MAP_i<=iso_par.Nagent-iso_par.Nagent2)
-                MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'R.','MarkerSize',25);   
+                MAP_PAR.viz_Yellows{MAP_i}(1)=plot(viz_x,viz_y,'R.','MarkerSize',30);   
                 MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);   
                 MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'R-','LineWidth',2);            
             else
-                MAP_PAR.viz_Yellows{MAP_i}(1)=plot3(viz_x,viz_y,1,'G.','MarkerSize',25);   
+                MAP_PAR.viz_Yellows{MAP_i}(1)=plot3(viz_x,viz_y,1,'G.','MarkerSize',30);   
                 MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);   
                 MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'G-','LineWidth',2);            
             end

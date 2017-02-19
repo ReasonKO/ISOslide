@@ -4,25 +4,31 @@ global exp6_data field
 
 
 exp6_data.C=[-90,-5];
-exp6_data.V=[2,0];
 
 %%
 global iso_par;
-iso_par.d0d=5;   %Шарана коридора присоедования
+iso_par.d0d=10;   %Шарана коридора присоедования
 iso_par.error=0.0;    %Ошибка датчика в %
-iso_par.d0=15; %приследуемое значение
+iso_par.d0=30; %приследуемое значение
+iso_par.d1=iso_par.d0+iso_par.d0d; %приследуемое значение
+
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
-iso_par.Nagent=1;%12  %Кол-во агентов
+iso_par.Nagent=4;%12  %Кол-во агентов
 iso_par.smooth=0;   %*гладкий режим*
 iso_par.ExpName='exp6';
 
 iso_par.xi=@(x)x;
 iso_par.nu=0.01;
 iso_par.o=1; %rotation direction
-iso_par.c_w=1;
+iso_par.Q0=1/20;
+iso_par.w0=iso_par.Q0+0.01;
+iso_par.Q=@(x)iso_par.Q0+x*(2*pi/iso_par.Nagent)*(iso_par.w0-iso_par.Q0);
+iso_par.c_w=iso_par.d1*iso_par.Q0;
 iso_par.a_=1;
-
+iso_par.delta_fi=0.01;
+iso_par.Rviz=20;
+iso_par.kppa=1;
 
 %iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/200^2+(exp3_data.C(2)-y).^2/100^2));
 %iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/300^2+(exp3_data.C(2)-y).^2/300^2));
@@ -30,6 +36,8 @@ iso_par.re_D=@(x,y)0;%exp3_reD(x,y);
 iso_par.Dynamic=@exp6_dyn;
 iso_par.AddViz=[];
 iso_par.Rule=@(Y)exp6_rule(Y);
+
+iso_par.TT=@(x)([x(2),-x(1)]);
 
 iso_par.Vmax=50; %Максимальная линейная скорость [Vmin..100]
 iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
@@ -41,8 +49,8 @@ iso_par.Rd_vision=0.9*iso_par.R_vision/iso_par.Nagent; % Радиус ближайших
 iso_par.e=(iso_par.Vmax-iso_par.Vmin)/iso_par.Nagent/50;  %коэфициент замедления для ряда ближайших
 
 iso_par.TracksVizual=1; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до выхода на изолинию)
-iso_par.TracksTime=200; %Затирание трека спустя iso_par.TracksTime отрисовок
-iso_par.TracksColor=[1,0,0];
+iso_par.TracksTime=50; %Затирание трека спустя iso_par.TracksTime отрисовок
+iso_par.TracksColor=[0.9,0.6,0.6];
 
 iso_par.TripleIsoline=false;
 global treckcolor;
@@ -77,6 +85,11 @@ Modul.viz=0;
 Modul.SaveExp=0;
 %% 
 Yellows(1,:)=[1,100,-80,0];
+Yellows(2,:)=[1,100,80,0];
+Yellows(3,:)=[1,150,-100,0];
+Yellows(4,:)=[1,150,-400,0];
+exp6_data.V=ones(iso_par.Nagent,2);
+
 exp6_data.Cv=1000;
 %% SECTION TITLE
 % DESCRIPTIVE TEXT
@@ -95,10 +108,10 @@ field.Zm{1}=2000+[0,0;0,0];
 MAP_INI
 figure(100)
 axis([-200,200,-200,200]);
-exp3_ADDviz
+global exp3_ADDviz
 hold on
-plot(exp6_data.C(1),exp6_data.C(2),'G*');%,'MarkerSize',25);
-plot(exp6_data.C(1),exp6_data.C(2),'Go');%,'MarkerSize',25);
+exp3_ADDviz.C=plot(exp6_data.C(1),exp6_data.C(2),'G.','MarkerSize',25);
+%plot(exp6_data.C(1),exp6_data.C(2),'Go');%,'MarkerSize',25);
 MAP
 %% RUN
 figure(100)

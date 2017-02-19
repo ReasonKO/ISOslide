@@ -64,10 +64,32 @@ C=exp6_data.C;
 d_dot=zeros(N,1);
 fi=zeros(N,1);
 fi_dot=zeros(N,1);
+pij=zeros(N,N);
+p=zeros(N,1);
+E=zeros(N,1);
+d=zeros(N,1);
+d_old=zeros(N,1);
 
 TT=@(x)([x(2),-x(1)]);
 a_x_=@(al,v_p)1;
 a_y_=@(al,v_p)1;
+
+
+for i=1:N 
+    for j=1:N
+        pij(i,j)=azi(iso_save.fi_old(j)-iso_save.fi_old(i));
+        pij(i,j)=pij(i,j)+pi*2*(pij(i,j)<0);
+        if iso_save.mod(j)~=2
+            pij(i,j)=inf;
+        end
+    end
+    pij(i,i)=inf;
+end
+%pij
+p=min(pij')';
+p(p==inf)=iso_par.delta_fi;
+p(iso_save.mod~=2)=NaN;
+TT=@(x)([x(2),-x(1)]);
 
 for i=1:N
     if (Robots(i,1)>0)  
@@ -85,15 +107,11 @@ for i=1:N
         %Vreal_filt=(Vreal_filt+Vreal)/2;
 %-------------------- d_dot
 
-        d=norm(C-Robots(i,2:3));%iso_D(Robots(i,2),Robots(i,3));
-        d_save(i)=d;
+        d(i)=norm(C-Robots(i,2:3));%iso_D(Robots(i,2),Robots(i,3));
+        d_save(i)=d(i);
 %        d=d+iso_par.d0*(0.01*randn(1,1)*iso_par.error);%погрешность датчика
-        dold=iso_save.dold(i);
-        if isnan(dold)
-            dold=d;
-        end
-        d_dot(i)=(d-dold)/(Modul.dT);
-        iso_save.dold(i)=d;        
+        d_dot(i)=(d(i)-iso_save.dold(i))/(Modul.dT);
+        iso_save.dold(i)=d(i);        
 %--------------------
         e(i,:)=(C-Robots(i,2:3));
         e(i,:)=e(i,:)/norm(e(i,:));
@@ -105,103 +123,37 @@ for i=1:N
         iso_save.fi_old(i)=fi(i);
 %% rule mod_C(0)
     al=NaN;v_p=NaN;
+
+    
+    
        u(i,:)=exp6_data.V(i,:)/norm(exp6_data.V(i,:));
-       iso_save.mod(i)
+     %  iso_save.mod(i)
+
         dfun(i)=d_dot(i)+iso_par.nu*iso_par.xi(d(i)-iso_par.d0);
-        fifun(i)=fi_dot(i)-iso_par.o*iso_par.c_w/d(i);
-        E(i)=fi_dot(i)-o*Q(p(i));
+        
+        c(i)=iso_par.kppa*d(i)*0;
+        E(i)=fi_dot(i)-iso_par.o*iso_par.Q(p(i));
         if (iso_save.mod(i)==0)
             if abs(dfun(i))<0.01
                 iso_save.mod(i)=1;
             end
             a(i,:)=iso_par.a_*TT(u(i,:));
-        end
-        if (iso_save.mod(i)==1)
+            fifun(i)=0;
+        elseif (iso_save.mod(i)==1)
+            fifun(i)=fi_dot(i)-iso_par.o*iso_par.c_w/d(i);        
+            a_x(i)=a_x_(al,v_p)*sign(dfun(i));
+            a_y(i)=-a_y_(al,v_p)*sign(fifun(i));
+            a(i,:)=a_x(i)*e(i,:)+a_y(i)*TT(e(i,:));
+            if abs(d(i))<iso_par.d1
+                iso_save.mod(i)=2;
+            end
+        elseif (iso_save.mod(i)==2)
+            fifun(i)=E(i)-c(i);        
             a_x(i)=a_x_(al,v_p)*sign(dfun(i));
             a_y(i)=-a_y_(al,v_p)*sign(fifun(i));
             a(i,:)=a_x(i)*e(i,:)+a_y(i)*TT(e(i,:));
         end
-        if (iso_save.mod(i)==2)
-            a_x(i)=a_x_(al,v_p)*sign(dfun(i));
-            a_y(i)=-a_y_(al,v_p)*sign(E(i)-c(i));
-            a(i,:)=a_x(i)*e(i,:)+a_y(i)*TT(e(i,:));
-        end
-%         p=exp3_re_P([Robots(i,2),Robots(i,3),0]);
-%         if isnan(pold(i))
-%             pold(i)=p;
-%         end
-%         p_dot=(p-pold(i));
-%         pold(i)=p;
-%         % 0==c
-%         % B==1
-%         % A==2  
-% 
-%         if (P_mod(i)==0) && (p<iso_par.d0) && (p_dot<0)
-%             P_mod(i)=1;
-%             P_d_star(i)=d;
-%             P_p_star(i)=p;
-%         else
-%             if ((P_mod(i)==1)||(P_mod(i)==A2)) && (d>P_d_star(i)+1) && (abs(d_dot)<0.01)% && (d_dot>0)
-%                 P_d_star(i)=d;
-%                 P_mod(i)=2;
-%                 Cmod=0;
-%             else
-%                 if (P_mod(i)==2) && (Cmod) %%&& (p<=P_p_star(i))%-0.1)%&& 
-%                     if ~isnan(P_p_star(i))
-%                         P_mod(i)=A2;
-%                     else
-%                         P_mod(i)=1;
-%                     end
-%                 end
-%                 if (P_mod(i)==2) && (d>=P_d_star(i)+dD) && (d_dot>=-0.01)
-%                     P_mod(i)=0;
-%                     P_d_star(i)=NaN;
-%                     P_p_star(i)=NaN;
-%                 end
-%             end
-%         end
-% 
-% %        if P_mod(i)==2
-% %            P_d_star(i)=d;
-% %        end
-%        if d<P_d_star(i)-dD
-%            Cmod=1;
-%        end
-%        if  P_mod(i)==1
-%            P_p_star(i)=p;
-%            if (p_dot>-0.05)
-%                P_mod(i)=A2;
-%            end                   
-%        end
-% 
-%                
-%         if (P_mod(i)==0)
-%             xi=0.9;
-%             Uarg=d_dot-Vreal*xi;    
-%         end
-%         if ((P_mod(i)==1)||(P_mod(i)==A2))
-%             xi_=(p-P_p_star(i))/iso_par.d0d;
-%             %%xi_=(p-iso_par.d0)/iso_par.d0d;
-%             xi=sign(xi_)*min(1,abs(xi_))*iso_par.Sgrad;            
-%             Uarg=p_dot+Vreal*xi;        
-%         end
-%         if (P_mod(i)==2)
-%             Uarg=-inf;
-%         end
-        
 
-%         if iso_par.smooth
-%             U=U_*9*(Uarg);%9
-%             if (abs(U)>U_)
-%                 U=sign(U)*U_;
-%             end
-%         else
-%             U=U_*sign(Uarg);
-%         end
-%         iso_save.Uold(i)=U;
-%         U=U+randn(1,1)*iso_par.error_U*500;
-% %-------------------- rule
-%         iso_rules(i,:)=[V+U,V-U];
     end
 end
     exp6_data.a=a;
@@ -222,42 +174,62 @@ end
 
 if (Modul.N==3)
     figure(201)
-    for i=1:N
-        subplot(3,2,1)
+    for i=1:1
+        subplot(3,3,1)
+        hold on
         Save_iso.d(i)=plot(0,d(i),'B');
         title('d');
+        Save_iso.d0(i)=plot(0,iso_par.d0,'R');
+        
 
-        subplot(3,2,3)
+        subplot(3,3,2)
         Save_iso.d_dot(i)=plot(0,d_dot(i),'B');
         title('d_{dot}');
 
-        subplot(3,2,5)
+        subplot(3,3,3)
         Save_iso.dfun(i)=plot(0,dfun(i),'B');
         title('d_{fun}');
 
-        subplot(3,2,2)
+        subplot(3,3,4)
         Save_iso.fi(i)=plot(0,fi(i),'B');
         title('fi');
 
-        subplot(3,2,4)
+        subplot(3,3,5)
+        hold on
         Save_iso.fi_dot(i)=plot(0,fi_dot(i),'B');
         title('fi_{dot}');
+        Save_iso.fi_dot_c(i)=plot(0,iso_par.o*iso_par.c_w/d(i),'R');
         
-        subplot(3,2,6)
+        subplot(3,3,6)
         Save_iso.ffun(i)=plot(0,fifun(i),'B');
         title('fi_{fun}');
+
+        subplot(3,3,7)
+        Save_iso.mod(i)=plot(0,iso_save.mod(i),'B');
+        title('mod');
+
+        subplot(3,3,8)
+        hold on
+        Save_iso.p(i)=plot(0,p(i),'B');
+        title('p');
+        Save_iso.p0(i)=plot(0,pi*2/iso_par.Nagent,'R');
     end
 
     
 end
 if (Modul.N>3 && Modul.PlotPulse)
-    for i=1:N
+    for i=1:1
+        setPlotData(Save_iso.d0(i),[0,Modul.T],[iso_par.d0,iso_par.d0]);
+        setPlotData(Save_iso.p0(i),[0,Modul.T],pi*2/iso_par.Nagent*[1,1]);
         addPlotData(Save_iso.dfun(i),Modul.T,dfun(i));
         addPlotData(Save_iso.fi_dot(i),Modul.T,fi_dot(i));
         addPlotData(Save_iso.d(i),Modul.T,d(i));
         addPlotData(Save_iso.fi(i),Modul.T,fi(i));
         addPlotData(Save_iso.d_dot(i),Modul.T,d_dot(i));
+        addPlotData(Save_iso.fi_dot_c(i),Modul.T,iso_par.o*iso_par.c_w/d(i));
         addPlotData(Save_iso.ffun(i),Modul.T,fifun(i));
+        addPlotData(Save_iso.mod(i),Modul.T,iso_save.mod(i));
+        addPlotData(Save_iso.p(i),Modul.T,p(i));        
     end
 end
 
