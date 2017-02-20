@@ -10,5 +10,17 @@ for i=1:iso_par.Nagent
 end
 
 global exp3_ADDviz
-%exp6_data.C=90*[-cos(Modul.T/100),sin(Modul.T/100)];
-setPlotData(exp3_ADDviz.C,exp6_data.C(1),exp6_data.C(2));
+if iso_par.SCENARIO6==1
+    exp6_data.C=90*[-cos(Modul.T/100),sin(Modul.T/100)/2];
+end
+if iso_par.SCENARIO6==2
+    T=Modul.T*2;
+    exp6_data.C=90*[-cos(2*atan(sin(T/200)))+sin(T/300),atan(T/500)-1+sin(T/100)/2];
+end
+if iso_par.SCENARIO6==3
+    exp6_data.C=90*[-cos(Modul.T/100),sin(Modul.T/100)/2];
+end
+if Modul.PlotPulse
+    setPlotData(exp3_ADDviz.C,exp6_data.C(1),exp6_data.C(2));
+    setPlotData(exp3_ADDviz.Co,exp6_data.C(1)+iso_par.d0*sin(0:pi/10:2*pi),exp6_data.C(2)+iso_par.d0*cos(0:pi/10:2*pi));
+end

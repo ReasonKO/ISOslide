@@ -55,6 +55,7 @@ PAR.KICK_DIST=150;
 
 iso_par.TripleIsoline=false;
 iso_par.TrackViz=0*ones(1,iso_par.Nagent);
+iso_par.RobotFormat=0;
 
 global treckcolor;
 treckcolor=[0.8,0.1,0.1];

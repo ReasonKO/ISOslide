@@ -29,6 +29,8 @@ if isempty(iso_save)
 %    iso_save.kenem=zeros(N,1);
 %    iso_save.sPmin=zeros(N,1);
     iso_save.Vreal_old=zeros(N,1);
+    iso_save.Vreal=zeros(N,1);
+    iso_save.Ureal=zeros(N,1);
     iso_save.Robots_old=Robots;
     iso_save.Uold=zeros(N,1);
 %    iso_save.SU=zeros(N,1);
@@ -69,10 +71,11 @@ p=zeros(N,1);
 E=zeros(N,1);
 d=zeros(N,1);
 d_old=zeros(N,1);
+fi_dot_c=zeros(N,1);
 
 TT=@(x)([x(2),-x(1)]);
 a_x_=@(al,v_p)1;
-a_y_=@(al,v_p)1;
+a_y_=@(al,v_p)0.2;
 
 
 for i=1:N 
@@ -91,15 +94,20 @@ p(p==inf)=iso_par.delta_fi;
 p(iso_save.mod~=2)=NaN;
 TT=@(x)([x(2),-x(1)]);
 
+global H
+if isempty(H)
+    H=[];
+end
+H=[H,Robots(1,4)];
+
 for i=1:N
     if (Robots(i,1)>0)  
 %-------------------- V
         %Vreal=iso_save.Vreal_old(i);
         V=V_*delta(i);
 
-        iso_save.Vreal_old(i)=norm(Robots(i,2:3)-iso_save.Robots_old(i,2:3),2);
-        iso_save.Robots_old(i,:)=Robots(i,:);
-        k=iso_save.Vreal_old(i)/0.2;
+        iso_save.Vreal(i)=norm(Robots(i,2:3)-iso_save.Robots_old(i,2:3),2)/Modul.T;
+        iso_save.Ureal(i)=azi(Robots(i,4)-iso_save.Robots_old(i,4))/Modul.T;
         %global Vreal_filt
         %if isempty(Vreal_filt)
         %    Vreal_filt=Vreal;
@@ -111,7 +119,7 @@ for i=1:N
         d_save(i)=d(i);
 %        d=d+iso_par.d0*(0.01*randn(1,1)*iso_par.error);%погрешность датчика
         d_dot(i)=(d(i)-iso_save.dold(i))/(Modul.dT);
-        iso_save.dold(i)=d(i);        
+        
 %--------------------
         e(i,:)=(C-Robots(i,2:3));
         e(i,:)=e(i,:)/norm(e(i,:));
@@ -120,7 +128,7 @@ for i=1:N
             iso_save.fi_old(i)=fi(i);
         end
         fi_dot(i)=azi(fi(i)-iso_save.fi_old(i))/(Modul.dT);
-        iso_save.fi_old(i)=fi(i);
+        
 %% rule mod_C(0)
     al=NaN;v_p=NaN;
 
@@ -132,93 +140,105 @@ for i=1:N
         dfun(i)=d_dot(i)+iso_par.nu*iso_par.xi(d(i)-iso_par.d0);
         
         c(i)=iso_par.kppa*d(i)*0;
-        E(i)=fi_dot(i)-iso_par.o*iso_par.Q(p(i));
         if (iso_save.mod(i)==0)
-            if abs(dfun(i))<0.01
+            if abs(dfun(i))<0.1
                 iso_save.mod(i)=1;
             end
             a(i,:)=iso_par.a_*TT(u(i,:));
             fifun(i)=0;
+            fi_dot_c(i)=0;
         elseif (iso_save.mod(i)==1)
-            fifun(i)=fi_dot(i)-iso_par.o*iso_par.c_w/d(i);        
+            fi_dot_c(i)=iso_par.o*iso_par.c_w/d(i);
+            fifun(i)=fi_dot(i)-fi_dot_c(i);        
             a_x(i)=a_x_(al,v_p)*sign(dfun(i));
             a_y(i)=-a_y_(al,v_p)*sign(fifun(i));
             a(i,:)=a_x(i)*e(i,:)+a_y(i)*TT(e(i,:));
             if abs(d(i))<iso_par.d1
                 iso_save.mod(i)=2;
             end
-        elseif (iso_save.mod(i)==2)
-            fifun(i)=E(i)-c(i);        
+        elseif (iso_save.mod(i)==2)           
+            fi_dot_c(i)=iso_par.o*iso_par.Q(p(i));
+            fifun(i)=fi_dot(i)-fi_dot_c(i);        
             a_x(i)=a_x_(al,v_p)*sign(dfun(i));
-            a_y(i)=-a_y_(al,v_p)*sign(fifun(i));
+            a_y(i)=-a_y_(al,v_p)*sign(fifun(i))-c(i);
             a(i,:)=a_x(i)*e(i,:)+a_y(i)*TT(e(i,:));
         end
 
     end
 end
-    exp6_data.a=a;
+exp6_data.a=a;
+iso_save.Robots_old=Robots;
+iso_save.fi_old=fi;
+iso_save.dold=d;        
 %% ---plots
 global Save_iso;
 plotln=30;
-figure(100)
-if (Modul.N==3)
-    for i=1:N
-        Save_iso.a(i)=plot(0,0,'B');
-    end
-end
-if (Modul.N>3)
-    for i=1:N
-        setPlotData(Save_iso.a(i),Robots(i,2)+[0,plotln*a(i,1)],Robots(i,3)+[0,plotln*a(i,2)]);
-    end
-end
 
 if (Modul.N==3)
-    figure(201)
-    for i=1:1
-        subplot(3,3,1)
+    for i=1:N
+        figure(200+i)
+        subplot(4,3,1)
         hold on
         Save_iso.d(i)=plot(0,d(i),'B');
         title('d');
         Save_iso.d0(i)=plot(0,iso_par.d0,'R');
         
 
-        subplot(3,3,2)
+        subplot(4,3,2)
+        hold on
         Save_iso.d_dot(i)=plot(0,d_dot(i),'B');
         title('d_{dot}');
+        Save_iso.d_dot_c(i)=plot(0,0,'R');
 
-        subplot(3,3,3)
+        subplot(4,3,3)
         Save_iso.dfun(i)=plot(0,dfun(i),'B');
         title('d_{fun}');
 
-        subplot(3,3,4)
+        subplot(4,3,4)
         Save_iso.fi(i)=plot(0,fi(i),'B');
         title('fi');
 
-        subplot(3,3,5)
+        subplot(4,3,5)
         hold on
         Save_iso.fi_dot(i)=plot(0,fi_dot(i),'B');
         title('fi_{dot}');
-        Save_iso.fi_dot_c(i)=plot(0,iso_par.o*iso_par.c_w/d(i),'R');
+        Save_iso.fi_dot_c(i)=plot(0,fi_dot_c(i),'R');
         
-        subplot(3,3,6)
+        subplot(4,3,6)
         Save_iso.ffun(i)=plot(0,fifun(i),'B');
         title('fi_{fun}');
 
-        subplot(3,3,7)
+        subplot(4,3,7)
         Save_iso.mod(i)=plot(0,iso_save.mod(i),'B');
         title('mod');
 
-        subplot(3,3,8)
+        subplot(4,3,8)
         hold on
         Save_iso.p(i)=plot(0,p(i),'B');
         title('p');
         Save_iso.p0(i)=plot(0,pi*2/iso_par.Nagent,'R');
+
+        subplot(4,3,10)
+        hold on
+        Save_iso.Vreal(i)=plot(0,iso_save.Vreal(i),'B');
+        title('V');
+
+        subplot(4,3,11)
+        hold on
+        Save_iso.Ureal(i)=plot(0,iso_save.Ureal(i),'B');
+        title('U');
+
+
     end
 
     
 end
 if (Modul.N>3 && Modul.PlotPulse)
-    for i=1:1
+    for i=1:N
+        addPlotData(Save_iso.Vreal(i),Modul.T,iso_save.Vreal(i));
+        addPlotData(Save_iso.Ureal(i),Modul.T,iso_save.Ureal(i));        
+        addPlotData(Save_iso.d_dot_c(i),Modul.T,-iso_par.nu*iso_par.xi(d(i)-iso_par.d0));
+       
         setPlotData(Save_iso.d0(i),[0,Modul.T],[iso_par.d0,iso_par.d0]);
         setPlotData(Save_iso.p0(i),[0,Modul.T],pi*2/iso_par.Nagent*[1,1]);
         addPlotData(Save_iso.dfun(i),Modul.T,dfun(i));
@@ -226,12 +246,23 @@ if (Modul.N>3 && Modul.PlotPulse)
         addPlotData(Save_iso.d(i),Modul.T,d(i));
         addPlotData(Save_iso.fi(i),Modul.T,fi(i));
         addPlotData(Save_iso.d_dot(i),Modul.T,d_dot(i));
-        addPlotData(Save_iso.fi_dot_c(i),Modul.T,iso_par.o*iso_par.c_w/d(i));
+        addPlotData(Save_iso.fi_dot_c(i),Modul.T,fi_dot_c(i));
         addPlotData(Save_iso.ffun(i),Modul.T,fifun(i));
         addPlotData(Save_iso.mod(i),Modul.T,iso_save.mod(i));
         addPlotData(Save_iso.p(i),Modul.T,p(i));        
     end
 end
+if (Modul.N==3)
+    figure(100)
+%     for i=1:N
+%         Save_iso.a(i)=plot(0,0,'B');
+%     end
+end
+% if (Modul.N>3)
+%     for i=1:N
+%         setPlotData(Save_iso.a(i),Robots(i,2)+[0,plotln*a(i,1)],Robots(i,3)+[0,plotln*a(i,2)]);
+%     end
+% end
 
 %% 1
 % exp3_data.rule_data.P_mod=P_mod;
