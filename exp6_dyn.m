@@ -18,7 +18,15 @@ if iso_par.SCENARIO6==2
     exp6_data.C=90*[-cos(2*atan(sin(T/200)))+sin(T/300),atan(T/500)-1+sin(T/100)/2];
 end
 if iso_par.SCENARIO6==3
-    exp6_data.C=90*[-cos(Modul.T/100),sin(Modul.T/100)/2];
+    T=Modul.T*1.5;
+    if T>300
+        T=T-300;
+    end
+    if T>300
+        T=T-300;
+    end
+    exp6_data.C=[min(T,100),max(0,min((T-100),100))]-[50,50]...
+        -[max(0,min((T-200),100)),max(0,min((T-200),100))];
 end
 if Modul.PlotPulse
     setPlotData(exp3_ADDviz.C,exp6_data.C(1),exp6_data.C(2));

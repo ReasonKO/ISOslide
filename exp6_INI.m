@@ -30,7 +30,7 @@ iso_par.delta_fi=2*pi/iso_par.Nagent;
 iso_par.Rviz=20;
 iso_par.kppa=1;
 
-iso_par.SCENARIO6=2;
+iso_par.SCENARIO6=3;
 iso_par.ExpName='exp6_';
 iso_par.ExpName(6)=48+iso_par.SCENARIO6;
 

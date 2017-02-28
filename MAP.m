@@ -33,6 +33,8 @@ end
 FORMAx=8*[-1,-1,1,-1];
 FORMAy=8*[-0.5,0.5,0,-0.5];
 
+trackDepth=0;
+
 for MAP_i=1:size(Yellows,1)
     if (Yellows(MAP_i,1)>0)
         viz_x=Yellows(MAP_i,2);
@@ -54,8 +56,11 @@ for MAP_i=1:size(Yellows,1)
                     MAP_PAR.viz_Yellows{MAP_i}(2)=plot(viz_angx,viz_angy,'G-','LineWidth',2);                            
                 end
             end
-            MAP_PAR.viz_Yellows_track{MAP_i}=plot3(viz_x,viz_y,-10,'LineWidth',2,'Color',iso_par.TracksColor);   
-            
+            if trackDepth~=0
+            MAP_PAR.viz_Yellows_track{MAP_i}=plot3(viz_x,viz_y,trackDepth,'LineWidth',2,'Color',iso_par.TracksColor);   
+            else
+            MAP_PAR.viz_Yellows_track{MAP_i}=plot(viz_x,viz_y,'LineWidth',2,'Color',iso_par.TracksColor);          
+            end
             %MAP_PAR.viz_Yellows{MAP_i}(3)=text(viz_x+MAP_l/2,viz_y+MAP_l/2,{MAP_i});
         else   
             if iso_par.RobotFormat==1
@@ -68,7 +73,11 @@ for MAP_i=1:size(Yellows,1)
                 xd=get(MAP_PAR.viz_Yellows_track{MAP_i},'xdata');
                 yd=get(MAP_PAR.viz_Yellows_track{MAP_i},'ydata');
                 zd=get(MAP_PAR.viz_Yellows_track{MAP_i},'zdata');
-                set(MAP_PAR.viz_Yellows_track{MAP_i},'xdata',[xd(max(end-iso_par.TracksTime,1):end),viz_x],'ydata',[yd(max(end-iso_par.TracksTime,1):end),viz_y],'zdata',-10*ones(min(length(xd)+1,iso_par.TracksTime+2),1));            
+                if trackDepth~=0
+                    set(MAP_PAR.viz_Yellows_track{MAP_i},'xdata',[xd(max(end-iso_par.TracksTime,1):end),viz_x],'ydata',[yd(max(end-iso_par.TracksTime,1):end),viz_y],'zdata',trackDepth*ones(min(length(xd)+1,iso_par.TracksTime+2),1));            
+                else
+                    set(MAP_PAR.viz_Yellows_track{MAP_i},'xdata',[xd(max(end-iso_par.TracksTime,1):end),viz_x],'ydata',[yd(max(end-iso_par.TracksTime,1):end),viz_y]);
+                end
             else
                 set(MAP_PAR.viz_Yellows_track{MAP_i},'xdata',NaN,'ydata',NaN,'zdata',NaN);            
             end

@@ -177,55 +177,61 @@ plotln=30;
 if (Modul.N==3)
     for i=1:N
         figure(200+i)
-        subplot(4,3,1)
+        subplot(4,2,1)
         hold on
         Save_iso.d(i)=plot(0,d(i),'B');
         title('d');
         Save_iso.d0(i)=plot(0,iso_par.d0,'R');
         
 
-        subplot(4,3,2)
+        subplot(4,2,2)
         hold on
         Save_iso.d_dot(i)=plot(0,d_dot(i),'B');
         title('d_{dot}');
         Save_iso.d_dot_c(i)=plot(0,0,'R');
 
-        subplot(4,3,3)
-        Save_iso.dfun(i)=plot(0,dfun(i),'B');
-        title('d_{fun}');
+    %    subplot(4,3,3)
+    %    Save_iso.dfun(i)=plot(0,dfun(i),'B');
+    %    title('d_{fun}');
 
-        subplot(4,3,4)
+        subplot(4,2,3)
         Save_iso.fi(i)=plot(0,fi(i),'B');
         title('fi');
 
-        subplot(4,3,5)
+        subplot(4,2,4)
         hold on
         Save_iso.fi_dot(i)=plot(0,fi_dot(i),'B');
         title('fi_{dot}');
         Save_iso.fi_dot_c(i)=plot(0,fi_dot_c(i),'R');
         
-        subplot(4,3,6)
-        Save_iso.ffun(i)=plot(0,fifun(i),'B');
-        title('fi_{fun}');
+%         subplot(4,3,6)
+%         Save_iso.ffun(i)=plot(0,fifun(i),'B');
+%         title('fi_{fun}');
 
-        subplot(4,3,7)
+        subplot(4,2,5)
         Save_iso.mod(i)=plot(0,iso_save.mod(i),'B');
+        axis([0,inf,0,3]);
+        set(gca,'YTick',[0,1,2]);
+        set(gca,'YTickLabel',{'C','A','M'});           
         title('mod');
+        
 
-        subplot(4,3,8)
+        subplot(4,2,6)
         hold on
         Save_iso.p(i)=plot(0,p(i),'B');
         title('p');
         Save_iso.p0(i)=plot(0,pi*2/iso_par.Nagent,'R');
 
-        subplot(4,3,10)
+        subplot(4,2,7)
         hold on
         Save_iso.Vreal(i)=plot(0,iso_save.Vreal(i),'B');
+        axis([0,inf,0,0.1]);
         title('V');
 
-        subplot(4,3,11)
+        subplot(4,2,8)
         hold on
         Save_iso.Ureal(i)=plot(0,iso_save.Ureal(i),'B');
+        axis([0,inf,-0.1,0.1]);
         title('U');
 
 
@@ -241,13 +247,13 @@ if (Modul.N>3 && Modul.PlotPulse)
        
         setPlotData(Save_iso.d0(i),[0,Modul.T],[iso_par.d0,iso_par.d0]);
         setPlotData(Save_iso.p0(i),[0,Modul.T],pi*2/iso_par.Nagent*[1,1]);
-        addPlotData(Save_iso.dfun(i),Modul.T,dfun(i));
+      %  addPlotData(Save_iso.dfun(i),Modul.T,dfun(i));
         addPlotData(Save_iso.fi_dot(i),Modul.T,fi_dot(i));
         addPlotData(Save_iso.d(i),Modul.T,d(i));
         addPlotData(Save_iso.fi(i),Modul.T,fi(i));
         addPlotData(Save_iso.d_dot(i),Modul.T,d_dot(i));
         addPlotData(Save_iso.fi_dot_c(i),Modul.T,fi_dot_c(i));
-        addPlotData(Save_iso.ffun(i),Modul.T,fifun(i));
+      %  addPlotData(Save_iso.ffun(i),Modul.T,fifun(i));
         addPlotData(Save_iso.mod(i),Modul.T,iso_save.mod(i));
         addPlotData(Save_iso.p(i),Modul.T,p(i));        
     end

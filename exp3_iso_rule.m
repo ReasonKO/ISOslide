@@ -250,7 +250,6 @@ for i=1:N
         V=V_*delta(i);
 
         iso_save.Vreal_old(i)=norm(Robots(i,2:3)-iso_save.Robots_old(i,2:3),2);
-        iso_save.Robots_old(i,:)=Robots(i,:);
         global Vreal_filt
         if isempty(Vreal_filt)
             Vreal_filt=Vreal;
@@ -355,6 +354,15 @@ exp3_data.rule_data.pold=pold;
 exp3_data.rule_data.Cmod=Cmod;
 %exp3_data.rule_data.Pdes=Pdes;
 
+if ~isfield(exp3_data,'MegaAdditionTheta')
+    exp3_data.MegaAdditionTheta=0;
+end
+if abs(Robots(1,4)-iso_save.Robots_old(1,4))>pi
+    exp3_data.MegaAdditionTheta=exp3_data.MegaAdditionTheta-2*pi*sign(Robots(1,4)-iso_save.Robots_old(1,4));
+end
+
+
+iso_save.Robots_old=Robots;
 %% Графика
 if iso_par.DataGraph
 global Save_iso;
@@ -400,6 +408,9 @@ if (Modul.N==3)
     figure(206)
     Save_iso.plot_p_dot=plot(0,p_dot,'B','LineWidth',2);
     legend('p''','Location','NorthWest');
+    figure(207)
+    Save_iso.plot_theta=plot(0,Robots(1,4),'B','LineWidth',2);
+    legend('Theta','Location','NorthWest');
     figure(100);    
 end
 if (Modul.N>=3)
@@ -419,6 +430,8 @@ addPlotData(Save_iso.plot_u,U/500);
 addPlotData(Save_iso.plot_mod,P_mod(1));
 
 addPlotData(Save_iso.plot_p_dot,p_dot);
+addPlotData(Save_iso.plot_theta,exp3_data.MegaAdditionTheta+Robots(1,4));
+
 end
 %Robots_old=Robots;
 end

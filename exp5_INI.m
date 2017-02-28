@@ -13,7 +13,7 @@ iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
 iso_par.Nagent=1;%12  %Кол-во агентов
-iso_par.smooth=0;   %*гладкий режим*
+iso_par.smooth=1;   %*гладкий режим*
 iso_par.ExpName='Bublic';
 
 
@@ -23,6 +23,7 @@ iso_par.re_D=@(x,y)exp3_reD(x,y);
 iso_par.Dynamic=@exp3_dynamic;
 iso_par.AddViz=[];
 iso_par.Rule=@(Y)exp3_iso_rule(Y);
+iso_par.DataGraph=1;
 
 iso_par.Vmax=50; %Максимальная линейная скорость [Vmin..100]
 iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
