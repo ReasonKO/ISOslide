@@ -30,6 +30,8 @@ iso_par.delta_fi=2*pi/iso_par.Nagent;
 iso_par.Rviz=20;
 iso_par.kppa=1;
 
+iso_par.Rul2Uconf=1;
+
 iso_par.SCENARIO6=3;
 iso_par.ExpName='exp6_';
 iso_par.ExpName(6)=48+iso_par.SCENARIO6;
@@ -45,7 +47,7 @@ iso_par.TT=@(x)([x(2),-x(1)]);
 
 iso_par.Vmax=50; %Максимальная линейная скорость [Vmin..100]
 iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
-iso_par.Umax=50; %Максимальная скорость поворота [0..(100-Vmax)]
+iso_par.Umax=0.5; %Максимальная скорость поворота [0..(100-Vmax)]
 
 iso_par.R_vision=10;       %Радиус видимости робота.
 iso_par.Fi_vision=0.5*pi/2; %Угол видимости робота
@@ -87,7 +89,7 @@ Modul.l_wheel=100;
 Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
-Modul.SaveExp=1;
+Modul.SaveExp=1;  %ЗАПИСЬ ЛОГОВ
 %% 
 Yellows(1,:)=[1,0,-80,0];
 Yellows(2,:)=[1,40,80,0];

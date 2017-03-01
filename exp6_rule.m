@@ -23,6 +23,7 @@ global ISO_VISION;
 global iso_save;
 if isempty(iso_save)
     %iso_save.dold=zeros(N,1);%
+iso_save.UrealFilt=zeros(N,1);
     iso_save.dold=NaN*ones(N,1);
     iso_save.mod=zeros(N,1);
     iso_save.fi_old=NaN*ones(N,1);
@@ -106,8 +107,9 @@ for i=1:N
         %Vreal=iso_save.Vreal_old(i);
         V=V_*delta(i);
 
-        iso_save.Vreal(i)=norm(Robots(i,2:3)-iso_save.Robots_old(i,2:3),2)/Modul.T;
-        iso_save.Ureal(i)=azi(Robots(i,4)-iso_save.Robots_old(i,4))/Modul.T;
+        iso_save.Vreal(i)=norm(Robots(i,2:3)-iso_save.Robots_old(i,2:3),2)/Modul.dT;
+        iso_save.Ureal(i)=azi(Robots(i,4)-iso_save.Robots_old(i,4))/Modul.dT;
+        iso_save.UrealFilt(i)=iso_save.UrealFilt(i)*0.9+iso_save.Ureal(i)*0.1;
         %global Vreal_filt
         %if isempty(Vreal_filt)
         %    Vreal_filt=Vreal;
@@ -169,7 +171,8 @@ end
 exp6_data.a=a;
 iso_save.Robots_old=Robots;
 iso_save.fi_old=fi;
-iso_save.dold=d;        
+iso_save.dold=d;   
+     
 %% ---plots
 global Save_iso;
 plotln=30;
@@ -225,13 +228,16 @@ if (Modul.N==3)
         subplot(4,2,7)
         hold on
         Save_iso.Vreal(i)=plot(0,iso_save.Vreal(i),'B');
-        axis([0,inf,0,0.1]);
+        %axis([0,inf,0,0.1]);
         title('V');
 
         subplot(4,2,8)
         hold on
-        Save_iso.Ureal(i)=plot(0,iso_save.Ureal(i),'B');
-        axis([0,inf,-0.1,0.1]);
+        Save_iso.Ureal(i)=plot(0,iso_save.Ureal(i),'G');
+        Save_iso.UrealFilt(i)=plot(0,iso_save.UrealFilt(i),'B');
+        Save_iso.Ureal_C(i)=plot(0,iso_par.w0,'R');
+        %legend('U_{real}','U_{filt}');
+        axis([0,inf,-iso_par.Umax*1.1,iso_par.Umax*1.1]);
         title('U');
 
 
@@ -239,10 +245,13 @@ if (Modul.N==3)
 
     
 end
-if (Modul.N>3 && Modul.PlotPulse)
+if (Modul.N>3)
     for i=1:N
+        addPlotData(Save_iso.Ureal(i),Modul.T,iso_save.Ureal(i));
+    if Modul.PlotPulse
         addPlotData(Save_iso.Vreal(i),Modul.T,iso_save.Vreal(i));
-        addPlotData(Save_iso.Ureal(i),Modul.T,iso_save.Ureal(i));        
+        setPlotData(Save_iso.Ureal_C(i),[0,Modul.T],iso_par.w0*[1,1]);        
+        addPlotData(Save_iso.UrealFilt(i),Modul.T,iso_save.UrealFilt(i));        
         addPlotData(Save_iso.d_dot_c(i),Modul.T,-iso_par.nu*iso_par.xi(d(i)-iso_par.d0));
        
         setPlotData(Save_iso.d0(i),[0,Modul.T],[iso_par.d0,iso_par.d0]);
@@ -256,6 +265,7 @@ if (Modul.N>3 && Modul.PlotPulse)
       %  addPlotData(Save_iso.ffun(i),Modul.T,fifun(i));
         addPlotData(Save_iso.mod(i),Modul.T,iso_save.mod(i));
         addPlotData(Save_iso.p(i),Modul.T,p(i));        
+    end
     end
 end
 if (Modul.N==3)

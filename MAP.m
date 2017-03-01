@@ -33,7 +33,7 @@ end
 FORMAx=8*[-1,-1,1,-1];
 FORMAy=8*[-0.5,0.5,0,-0.5];
 
-trackDepth=0;
+trackDepth=-10;
 
 for MAP_i=1:size(Yellows,1)
     if (Yellows(MAP_i,1)>0)
