@@ -36,6 +36,13 @@ if isfield(MAP_PAR,'SAVEMAP')
         if (isnumeric(field)==1 && numel(field)==1)
             fwrite(fid,sprintf('\t%s = %d \n',fldnms{i},field),'int16');
         end
-    end
+    end    
     fclose(fid);
+
+    global SAVE_results
+    if ~isempty(SAVE_results)
+        save([MAP_PAR.SAVEMAP.name,'/SAVE_results'],'SAVE_results');
+    end
+
 end
+

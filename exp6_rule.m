@@ -64,6 +64,7 @@ a_x=zeros(N,1);
 a_y=zeros(N,1);
 delta=ones(N,1);
 C=exp6_data.C;
+c=zeros(N,1);
 d_dot=zeros(N,1);
 fi=zeros(N,1);
 fi_dot=zeros(N,1);
@@ -101,6 +102,8 @@ if isempty(H)
 end
 H=[H,Robots(1,4)];
 
+
+
 for i=1:N
     if (Robots(i,1)>0)  
 %-------------------- V
@@ -130,18 +133,27 @@ for i=1:N
             iso_save.fi_old(i)=fi(i);
         end
         fi_dot(i)=azi(fi(i)-iso_save.fi_old(i))/(Modul.dT);
+%% deltafi
         
+        fi_help=azi(iso_save.fi_old(iso_save.mod==2)-iso_save.fi_old(i));
+        fi_help(fi_help<0)=fi_help(fi_help<0)+2*pi;
+        fi_sort=sort(fi_help);
+        if isempty(fi_sort)
+            Summ=0;
+        else
+            delta_fi=diff(fi_sort);
+            Summ=sum(iso_par.beta(delta_fi));
+        end
 %% rule mod_C(0)
-    al=NaN;v_p=NaN;
+        al=NaN;v_p=NaN;
 
     
     
-       u(i,:)=exp6_data.V(i,:)/norm(exp6_data.V(i,:));
-     %  iso_save.mod(i)
-
+        u(i,:)=exp6_data.V(i,:)/norm(exp6_data.V(i,:));
         dfun(i)=d_dot(i)+iso_par.nu*iso_par.xi(d(i)-iso_par.d0);
         
-        c(i)=iso_par.kppa*d(i)*0;
+        
+        c(i)=iso_par.kppa*d(i)*Summ;
         if (iso_save.mod(i)==0)
             if abs(dfun(i))<0.1
                 iso_save.mod(i)=1;
@@ -173,7 +185,7 @@ iso_save.Robots_old=Robots;
 iso_save.fi_old=fi;
 iso_save.dold=d;   
      
-%% ---plots
+%% ---plots =============================== GRAPH =========================
 global Save_iso;
 plotln=30;
 
@@ -240,6 +252,11 @@ if (Modul.N==3)
         axis([0,inf,-iso_par.Umax*1.1,iso_par.Umax*1.1]);
         title('U');
 
+        figure(210)
+        subplot(3,2,i)
+        Save_iso.c(i)=plot(0,c(i),'R');
+        
+
 
     end
 
@@ -247,6 +264,7 @@ if (Modul.N==3)
 end
 if (Modul.N>3)
     for i=1:N
+        addPlotData(Save_iso.c(i),Modul.T,c(i));
         addPlotData(Save_iso.Ureal(i),Modul.T,iso_save.Ureal(i));
     if Modul.PlotPulse
         addPlotData(Save_iso.Vreal(i),Modul.T,iso_save.Vreal(i));
@@ -280,79 +298,5 @@ end
 %     end
 % end
 
-%% 1
-% exp3_data.rule_data.P_mod=P_mod;
-% exp3_data.rule_data.P_d_star=P_d_star;
-% exp3_data.rule_data.P_p_star=P_p_star;
-% exp3_data.rule_data.pold=pold;
-% exp3_data.rule_data.Cmod=Cmod;
-%exp3_data.rule_data.Pdes=Pdes;
 
-%% Графика
-% if iso_par.DataGraph
-% global Save_iso;
-% if (Modul.N==3)
-%     
-%     figure(201)
-%     Save_iso.plot_p=plot(0,p,'K','LineWidth',1);
-%     hold on
-%     %Save_iso.plot_d2=plot(NaN,NaN,'B','LineWidth',1);
-%     Save_iso.plot_d0=plot(0,P_p_star(i),'R','LineWidth',2);
-%     Save_iso.plot_p02=plot(0,iso_par.d0,'R--','LineWidth',2);
-%     legend('p','p_{des}','p_{sw}','Location','NorthWest');
-%     title('p & p0');
-%     
-%     figure(202)
-%     Save_iso.plot_dd=plot(0,d_dot,'K','LineWidth',1);
-%     hold on
-%     Save_iso.plot_sgrad=plot(0,Vreal*0.9,'R','LineWidth',2);
-%     legend('d''','V_d','Location','NorthWest');
-%     title('d'' & V_d');
-%     
-%     figure(203)
-%     Save_iso.plot_u=plot(0,U/500,'K','LineWidth',1);
-%     title('u');
-%     
-%     figure(204)
-%     ylim([-1,3]);
-%     hold on
-%     Save_iso.plot_mod=plot(0,P_mod(1),'K','LineWidth',2);
-%     set(gca,'YTick',[0,1,2]);
-%     set(gca,'YTickLabel',{'C','A','B'});   
-%     legend('mod','Location','NorthWest');
-%     title('mod');
-%   
-%     figure(205)
-%     Save_iso.plot_d_zero=plot(0,exp3_data.Cv,'G-','LineWidth',3);
-%     hold on    
-%     ylim([d-10,1001]);
-%     Save_iso.plot_d_star=plot(0,d,'R','LineWidth',2);
-%     Save_iso.plot_d=plot(0,d,'K','LineWidth',1);
-%     legend('max','d_*','d','Location','NorthWest');
-%     title('max, d_* & d');
-%     figure(206)
-%     Save_iso.plot_p_dot=plot(0,p_dot,'B','LineWidth',2);
-%     legend('p''','Location','NorthWest');
-%     figure(100);    
-% end
-% if (Modul.N>=3)
-% addPlotData(Save_iso.plot_p,p);
-% addPlotData(Save_iso.plot_d0,P_p_star(i));
-% addPlotData(Save_iso.plot_p02,iso_par.d0);
-% 
-% addPlotData(Save_iso.plot_dd,d_dot/Vreal);
-% addPlotData(Save_iso.plot_sgrad,0.9);
-% 
-% addPlotData(Save_iso.plot_d_star,P_d_star(1));
-% addPlotData(Save_iso.plot_d,d);
-% addPlotData(Save_iso.plot_d_zero,exp3_data.Cv);
-% 
-% addPlotData(Save_iso.plot_u,U/500);
-% 
-% addPlotData(Save_iso.plot_mod,P_mod(1));
-% 
-% addPlotData(Save_iso.plot_p_dot,p_dot);
-% end
-%Robots_old=Robots;
-% end
 end

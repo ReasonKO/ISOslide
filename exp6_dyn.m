@@ -7,6 +7,7 @@ for i=1:iso_par.Nagent
         U=ae(2)/V;
         U=max(-iso_par.Umax,min(iso_par.Umax,U));
         V=V+ae(1)*Modul.dT;
+        V=min(V,iso_par.Vmax);
         [re(1),re(2),re(3)]=extrap(Yellows(i,2),Yellows(i,3),Yellows(i,4),...
             V,U,Modul.dT);
         Ureal=azi(re(3)-Yellows(i,4))/Modul.dT;

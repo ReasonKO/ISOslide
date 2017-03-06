@@ -25,10 +25,12 @@ iso_par.Q0=1/20;
 iso_par.w0=0.08;
 iso_par.Q=@(x)iso_par.Q0+x/(2*pi/iso_par.Nagent)*(iso_par.w0-iso_par.Q0);
 iso_par.c_w=iso_par.d1*iso_par.Q0;
-iso_par.a_=1;
+iso_par.a_=1; %a_max
+
 iso_par.delta_fi=2*pi/iso_par.Nagent;
 iso_par.Rviz=20;
-iso_par.kppa=1;
+iso_par.kppa=0.2/100;
+iso_par.beta=@(fi)sign(fi).*(max(0,1-abs(fi)/(pi/3)));
 
 iso_par.Rul2Uconf=1;
 
@@ -45,8 +47,8 @@ iso_par.Rule=@(Y)exp6_rule(Y);
 
 iso_par.TT=@(x)([x(2),-x(1)]);
 
-iso_par.Vmax=50; %Максимальная линейная скорость [Vmin..100]
-iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
+iso_par.Vmax=5; %Максимальная линейная скорость [Vmin..100]
+%iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
 iso_par.Umax=0.5; %Максимальная скорость поворота [0..(100-Vmax)]
 
 iso_par.R_vision=10;       %Радиус видимости робота.
@@ -58,13 +60,19 @@ iso_par.TracksVizual=1; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до вы
 iso_par.TracksTime=100; %Затирание трека спустя iso_par.TracksTime отрисовок
 iso_par.TracksColor=[0.9,0.6,0.6];
 iso_par.RobotFormat=1;
+iso_par.trackDepth=-10;
 
 iso_par.TripleIsoline=false;
 global treckcolor;
 treckcolor=[0.8,0.1,0.1];
 
 global Pause; Pause=0;
+%% ----------------------
+iso_par.add.delta_a_=0.1;
+iso_par.add.delta_v_=0.1;
+iso_par.add.delta=(2*iso_par.Vmax)^-1*sqrt(2*iso_par.Vmax*iso_par.add.delta_v_-iso_par.add.delta_v_^2);
 
+%% -----------------------
 global PAR;
 PAR.MAP_X=300;
 PAR.MAP_Y=300;

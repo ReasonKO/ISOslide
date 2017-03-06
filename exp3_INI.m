@@ -15,6 +15,7 @@ iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
 iso_par.Nagent=1;%12  %Кол-во агентов
 iso_par.smooth=0;   %*гладкий режим*
+iso_par.DataGraph=1;
 
 iso_par.ExpName='Mnojestva';
 iso_par.re_D=@(x,y)exp3_reD(x,y);

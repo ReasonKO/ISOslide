@@ -47,6 +47,7 @@ iso_par.DataGraph=0;
 iso_par.outsidespawn=NaN;
 iso_par.VidVisible=true;
 iso_par.SectorVisual=0;%Визуализация сектора видимости
+iso_par.trackDepth=0;
 
 global PAR;
 PAR.MAP_X=7500;

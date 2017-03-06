@@ -9,13 +9,12 @@ exp3_data.C=[-90,-5];
 global iso_par;
 iso_par.d0d=5;   %Шарана коридора присоедования
 iso_par.error=0.0;    %Ошибка датчика в %
-iso_par.d0=15; %приследуемое значение
+iso_par.d0=20; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
 iso_par.Nagent=1;%12  %Кол-во агентов
 iso_par.smooth=1;   %*гладкий режим*
 iso_par.ExpName='Bublic';
-
 
 %iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/200^2+(exp3_data.C(2)-y).^2/100^2));
 %iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/300^2+(exp3_data.C(2)-y).^2/300^2));
@@ -23,7 +22,7 @@ iso_par.re_D=@(x,y)exp3_reD(x,y);
 iso_par.Dynamic=@exp3_dynamic;
 iso_par.AddViz=[];
 iso_par.Rule=@(Y)exp3_iso_rule(Y);
-iso_par.DataGraph=1;
+iso_par.faa=1;
 
 iso_par.Vmax=50; %Максимальная линейная скорость [Vmin..100]
 iso_par.Vmin=10; %Минимальная линейная скорость  [0..Vmax] 
@@ -35,8 +34,10 @@ iso_par.Rd_vision=0.9*iso_par.R_vision/iso_par.Nagent; % Радиус ближайших
 iso_par.e=(iso_par.Vmax-iso_par.Vmin)/iso_par.Nagent/50;  %коэфициент замедления для ряда ближайших
 
 iso_par.TracksVizual=1; %Демонстрация треков (0 - никогда, 1 - всегда, 2 - до выхода на изолинию)
-iso_par.TracksTime=200; %Затирание трека спустя iso_par.TracksTime отрисовок
+iso_par.TracksTime=180; %Затирание трека спустя iso_par.TracksTime отрисовок
 iso_par.TracksColor=[1,0,0];
+iso_par.trackDepth=0;
+
 
 iso_par.TripleIsoline=false;
 global treckcolor;
@@ -69,6 +70,8 @@ Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;
+iso_par.DataGraph=1;
+
 %% 
 Yellows(1,:)=[1,100,-80,0];
 exp3_data.Cv=1000;
@@ -78,7 +81,7 @@ exp3_data.Cv=1000;
 %field.Ym{1}=max(23.2276,exp(1/ang)/1000).*cos(ang+pi/4)+h;
 field.Xm{1}=7*exp(15./(abs(ang)+1.55*pi)).*sin(sign(ang)*1.8*pi+ang)+3*cos(h)+90*sign(ang);
 field.Ym{1}=7*exp(15./(abs(ang)+1.55*pi)).*cos(sign(ang)*1.8*pi+ang)+3*sin(h);
-field.Zm{1}=ones(size(ang));
+field.Zm{1}=h/3;
 % field.Xm{1}=[1,1;1,1];
 % field.Ym{1}=[1,1;1,1];
 % field.Zm{1}=[1,1;1,1];
@@ -91,6 +94,7 @@ exp3_ADDviz
 hold on
 plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);
 plot(exp3_data.C(1),exp3_data.C(2),'Go');%,'MarkerSize',25);
+
 MAP
 %% RUN
 MODUL
