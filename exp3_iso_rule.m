@@ -241,8 +241,11 @@ Cmod=exp3_data.rule_data.Cmod;
 %Pdes=exp3_data.rule_data.Pdes;
 %% ”правление дл€ V
 A2=1.01;
-dD=1;%3;%0.5;
-
+% if isfield(iso_par,'dD')
+%     dD=iso_par.dD;%1;%3;%0.5;
+% else
+%     dD=1;
+% end
 for i=1:N
     if (Robots(i,1)>0)  
 %-------------------- V
@@ -290,12 +293,12 @@ for i=1:N
             else
                 if (P_mod(i)==2) && (Cmod) %%&& (p<=P_p_star(i))%-0.1)%&& 
                     if ~isnan(P_p_star(i))
-                        P_mod(i)=1;%A2;
+                        P_mod(i)=A2;
                     else
                         P_mod(i)=1;
                     end
                 end
-                if (P_mod(i)==2) && (d>=P_d_star(i)+dD) && (d_dot>=-0.01)
+                if (P_mod(i)==2) && (d>=P_d_star(i)+iso_par.dD) && (d_dot>=-0.01)
                     P_mod(i)=0;
                     P_d_star(i)=NaN;
                     P_p_star(i)=NaN;
@@ -306,7 +309,7 @@ for i=1:N
 %        if P_mod(i)==2
 %            P_d_star(i)=d;
 %        end
-       if d<P_d_star(i)-dD
+       if d<P_d_star(i)-iso_par.dD
            Cmod=1;
        end
        if  P_mod(i)==1
@@ -331,9 +334,8 @@ for i=1:N
             Uarg=-inf;
         end
         
-
         if iso_par.smooth
-            U=U_*20*(Uarg);%9
+            U=U_*iso_par.smooth_koef*(Uarg);%9
             if (abs(U)>U_)
                 U=sign(U)*U_;
             end

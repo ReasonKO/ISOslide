@@ -9,13 +9,14 @@ exp3_data.error=0.1;    %Ошибка датчика в %
 %%
 global iso_par;
 iso_par.d0d=5;   %Шарана коридора присоедования
-iso_par.error=0.05;%/0.15;    %Ошибка датчика в %
+iso_par.error=0.00;%/0.15;    %Ошибка датчика в %
 iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %Макс.градиент
 iso_par.Tspeed=1;   %Ускорение изолинии по времени
 iso_par.Nagent=1;%12  %Кол-во агентов
-iso_par.smooth=0;   %*гладкий режим*
-iso_par.DataGraph=1;
+iso_par.smooth=1;   %*гладкий режим*
+iso_par.dD=3;
+iso_par.smooth_koef=30;
 
 iso_par.ExpName='Mnojestva';
 iso_par.re_D=@(x,y)exp3_reD(x,y);
@@ -66,6 +67,7 @@ Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;
+iso_par.DataGraph=1;
 %% 
 Yellows(1,:)=[1,-250,-150,0];
 exp3_data.C=[70,70];
@@ -134,7 +136,7 @@ field.Zm{6}=ones(size(L));
 
 MAP_INI
 figure(100)
-axis([-300,100,-200,150]);
+axis([-300,100,-200,150,0,2]);
 hold on
 exp3_ADDviz
 plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);

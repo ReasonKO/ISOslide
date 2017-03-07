@@ -17,7 +17,7 @@ if (isempty(PAR))
     return;
 end
 axis equal
-axis([-PAR.MAP_X/2,PAR.MAP_X/2,-PAR.MAP_Y/2,PAR.MAP_Y/2,0,1]);
+axis([-PAR.MAP_X/2,PAR.MAP_X/2,-PAR.MAP_Y/2,PAR.MAP_Y/2,0,2]);
 %plot(C(1)+300*sin(0:0.1:2*pi),C(2)+300*cos(0:0.1:2*pi));
 set(gca,'Color',[0.95 0.95 0.95]);
 

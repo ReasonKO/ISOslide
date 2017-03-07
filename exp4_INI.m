@@ -11,7 +11,9 @@ iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %ћакс.градиент
 iso_par.Tspeed=1;   %”скорение изолинии по времени
 iso_par.Nagent=1;%12  % ол-во агентов
-iso_par.smooth=0;   %*гладкий режим*
+iso_par.smooth=1;   %*гладкий режим*
+iso_par.dD=3;
+iso_par.smooth_koef=30;
 
 iso_par.ExpName='Dynamic';
 iso_par.re_D=@(x,y)exp3_reD(x,y);
@@ -62,8 +64,9 @@ Modul.T=0;
 Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;
+iso_par.DataGraph=1;
 %% 
-Yellows(1,:)=[1,-20,-190,0];
+Yellows(1,:)=[1,-20,-195-5*0,0];
 exp3_data.C=[-120,150];
 exp3_data.Cv=1000;
 
@@ -95,7 +98,7 @@ field.Ym{1}=field.Ym{1}+90;% load('M2');
 
 MAP_INI
 figure(100)
-axis([-200,200,-200,200]);
+axis([-200,200,-200,200,0,2]);
 hold on
 exp4_ADDviz
 plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);

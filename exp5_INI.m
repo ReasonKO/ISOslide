@@ -15,6 +15,8 @@ iso_par.Tspeed=1;   %Ускорение изолинии по времени
 iso_par.Nagent=1;%12  %Кол-во агентов
 iso_par.smooth=1;   %*гладкий режим*
 iso_par.ExpName='Bublic';
+iso_par.dD=1;
+iso_par.smooth_koef=20;
 
 %iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/200^2+(exp3_data.C(2)-y).^2/100^2));
 %iso_par.re_D=@(x,y)700+300*exp(-((exp3_data.C(1)-x).^2/300^2+(exp3_data.C(2)-y).^2/300^2));
