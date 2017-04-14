@@ -73,18 +73,18 @@ Yellows(1,:)=[1,-250,-150,0];
 exp3_data.C=[70,70];
 exp3_data.Cv=1000;
 
-[X,Y]=meshgrid(-60:60,-40:20);
+[X,Y]=meshgrid(-60:0.1:60,-40:0.1:20);
 Z=1*or(abs(X)>40,Y>0);
 field.Xm{1}=X;
 field.Ym{1}=Y-20;
 field.Zm{1}=Z;
 
-[R,ang]=meshgrid(0:10:20,-pi:pi/30:pi);
+[R,ang]=meshgrid(0:1:20,-pi:pi/1000:pi);
 field.Xm{2}=-130+2*R.*cos(ang);
 field.Ym{2}=-130+R.*sin(ang);
 field.Zm{2}=ones(size(R));
 
-[L,H]=meshgrid(0:2:150,-10:10:10);
+[L,H]=meshgrid(0:1:150,-10:10:10);
 field.Xm{3}=-220+L-H-L/10;
 field.Ym{3}=-100+L+H;
 field.Zm{3}=ones(size(L));
@@ -104,7 +104,7 @@ field.Zm{3}=ones(size(L));
 % field.Ym{5}=50+R.*sin(ang+pi/4)-R.*cos(ang+pi/4);
 % field.Zm{5}=ones(size(R));
 
-[R,ang]=meshgrid(35:1:40,-pi/4+(-pi:pi/50:pi/2));
+[R,ang]=meshgrid(35:1:40,-pi/4+(-pi:pi/500:pi/2));
 field.Xm{5}=0+R.*cos(ang+pi/4);
 field.Ym{5}=50+R.*sin(ang+pi/4);
 field.Zm{5}=ones(size(R));
@@ -114,7 +114,7 @@ field.Zm{5}=ones(size(R));
 % field.Ym{7}=-110-H;
 % field.Zm{7}=ones(size(L));
 
-[R,ang]=meshgrid(55:5:60,0.9425+(-pi/2:pi/8:pi*3/5));
+[R,ang]=meshgrid(55:1:60,0.9425+(-pi/2:pi/80:pi*3/5));
 field.Xm{8}=-180+R.*cos(ang+pi/4);
 field.Ym{8}=30+R.*sin(ang+pi/4);
 field.Zm{8}=ones(size(R));
@@ -125,7 +125,7 @@ field.Xm{4}=-20+L*cos(ang)+H*cos(ang+pi/2);
 field.Ym{4}=-150+L*sin(ang)+H*sin(ang+pi/2);
 field.Zm{4}=ones(size(L));
 
-[L,H]=meshgrid(-4:1:4,0:1:40);
+[L,H]=meshgrid(-4:1:4,0:0.1:40);
 field.Xm{6}=-20-H-L;
 field.Ym{6}=-150-L+H;
 field.Zm{6}=ones(size(L));

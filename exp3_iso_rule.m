@@ -30,6 +30,7 @@ if isempty(iso_save)
     iso_save.Robots_old=Robots;
     iso_save.Uold=zeros(N,1);
     iso_save.SU=zeros(N,1);
+    iso_save.d_dot_old=zeros(N,1);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Speed(Vreal)----------------------------------------------
@@ -240,7 +241,7 @@ pold=exp3_data.rule_data.pold;
 Cmod=exp3_data.rule_data.Cmod;
 %Pdes=exp3_data.rule_data.Pdes;
 %% ”правление дл€ V
-A2=1.01;
+O3=1.01;
 % if isfield(iso_par,'dD')
 %     dD=iso_par.dD;%1;%3;%0.5;
 % else
@@ -269,7 +270,7 @@ for i=1:N
             dold=d;
         end
         d_dot=(d-dold);
-        iso_save.dold(i)=d;        
+        iso_save.dold(i)=d;    
         p=exp3_re_P([Robots(i,2),Robots(i,3),0]);
         if isnan(pold(i))
             pold(i)=p;
@@ -286,19 +287,19 @@ for i=1:N
             P_p_star(i)=p;
         else    
 
-            if ((P_mod(i)==A2)) && (d>P_d_star(i)+1) && (abs(d_dot)<0.01)% && (d_dot>0)
+            if ((P_mod(i)==O3)) && (d>P_d_star(i)+1) && (sign(d_dot)~=sign(iso_save.d_dot_old(i)))% && (d_dot>0)
                 P_d_star(i)=d;
                 P_mod(i)=2;
                 Cmod=0;
             else
-                if (P_mod(i)==2) && (Cmod) %%&& (p<=P_p_star(i))%-0.1)%&& 
+                if (P_mod(i)==2) && (Cmod) && (p<=P_p_star(i))%-0.1)%&& 
                     if ~isnan(P_p_star(i))
-                        P_mod(i)=A2;
+                        P_mod(i)=O3;
                     else
                         P_mod(i)=1;
                     end
                 end
-                if (P_mod(i)==2) && (d>=P_d_star(i)+iso_par.dD) && (d_dot>=-0.01)
+                if (Cmod==0) && (P_mod(i)==2) && (d>=P_d_star(i)+iso_par.dD) && (d_dot>=-0.01)
                     P_mod(i)=0;
                     P_d_star(i)=NaN;
                     P_p_star(i)=NaN;
@@ -315,8 +316,8 @@ for i=1:N
        if  P_mod(i)==1
            P_p_star(i)=p;
            P_d_star(i)=d;
-           if (p_dot>0)
-               P_mod(i)=A2;
+           if (p_dot>-0.01)
+               P_mod(i)=O3;
            end                   
        end
                
@@ -324,11 +325,13 @@ for i=1:N
             xi=0.9;
             Uarg=d_dot-Vreal*xi;    
         end
-        if ((P_mod(i)==1)||(P_mod(i)==A2))
+        p_xi=NaN;
+        if ((P_mod(i)==1)||(P_mod(i)==O3))
             xi_=(p-P_p_star(i))/iso_par.d0d;
             %%xi_=(p-iso_par.d0)/iso_par.d0d;
             xi=sign(xi_)*min(1,abs(xi_))*iso_par.Sgrad;            
             Uarg=p_dot+Vreal*xi;        
+            p_xi=Vreal*xi;
         end
         if (P_mod(i)==2)
             Uarg=-inf;
@@ -350,6 +353,8 @@ for i=1:N
 end
 
 %% 1
+iso_save.d_dot_old(i)=d_dot;
+
 exp3_data.rule_data.P_mod=P_mod;
 exp3_data.rule_data.P_d_star=P_d_star;
 exp3_data.rule_data.P_p_star=P_p_star;
@@ -411,7 +416,11 @@ if (Modul.N==3)
 
     figure(206)
     Save_iso.plot_p_dot=plot(0,p_dot,'B','LineWidth',2);
+    hold on
+%     Save_iso.plot_p_xi=plot(0,0,'R','LineWidth',2);
     legend('p''','Location','NorthWest');
+
+%     legend('p''','Xi','Location','NorthWest');
 
     figure(207)
     Save_iso.plot_theta=plot(0,Robots(1,4),'B','LineWidth',2);
@@ -435,6 +444,7 @@ addPlotData(Save_iso.plot_u,U/500);
 addPlotData(Save_iso.plot_mod,P_mod(1));
 
 addPlotData(Save_iso.plot_p_dot,p_dot);
+% addPlotData(Save_iso.plot_p_xi,p_xi);
 addPlotData(Save_iso.plot_theta,exp3_data.MegaAdditionTheta+Robots(1,4));
 
 end

@@ -14,8 +14,6 @@ fprintf('---Start Modul!---\n');
 while(Modul.T+Modul.dT<=Modul.Tend )    
     Rules=zeros(30,7);
     %----------------------------------------------------------------------
-    Modul.N=Modul.N+1;
-    Modul.T=Modul.T+Modul.dT;    
     Modul.PlotPulse=mod(Modul.N,floor(Modul.freq/Modul.dT))==0;
 
     iso_main; 
@@ -45,6 +43,8 @@ while(Modul.T+Modul.dT<=Modul.Tend )
     end
     %-----------------------------------Dynamics---------------------------
     iso_par.Dynamic();
+    Modul.N=Modul.N+1;
+    Modul.T=Modul.T+Modul.dT;    
 end
 iso_save_param
 Modul.T

@@ -11,8 +11,8 @@ iso_par.d0=15; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %ћакс.градиент
 iso_par.Tspeed=1;   %”скорение изолинии по времени
 iso_par.Nagent=1;%12  % ол-во агентов
-iso_par.smooth=1;   %*гладкий режим*
-iso_par.dD=3;
+iso_par.smooth=0;   %*гладкий режим*
+iso_par.dD=2;
 iso_par.smooth_koef=30;
 
 iso_par.ExpName='Dynamic';
@@ -66,7 +66,11 @@ Modul.viz=0;
 Modul.SaveExp=1;
 iso_par.DataGraph=1;
 %% 
-Yellows(1,:)=[1,-20,-195-5*0,0];
+if iso_par.smooth
+Yellows(1,:)=[1,-20,-175,0];
+else
+Yellows(1,:)=[1,-20,-186,0];
+end
 exp3_data.C=[-120,150];
 exp3_data.Cv=1000;
 

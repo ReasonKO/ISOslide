@@ -13,7 +13,7 @@ iso_par.d0=20; %приследуемое значение
 iso_par.Sgrad=0.7;%1  %ћакс.градиент
 iso_par.Tspeed=1;   %”скорение изолинии по времени
 iso_par.Nagent=1;%12  % ол-во агентов
-iso_par.smooth=1;   %*гладкий режим*
+iso_par.smooth=0;   %*гладкий режим*
 iso_par.ExpName='Bublic';
 iso_par.dD=1;
 iso_par.smooth_koef=20;
@@ -96,7 +96,7 @@ exp3_ADDviz
 hold on
 plot(exp3_data.C(1),exp3_data.C(2),'G*');%,'MarkerSize',25);
 plot(exp3_data.C(1),exp3_data.C(2),'Go');%,'MarkerSize',25);
-
+return
 MAP
 %% RUN
 MODUL
