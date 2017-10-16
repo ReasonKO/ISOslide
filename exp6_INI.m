@@ -34,7 +34,7 @@ iso_par.beta=@(fi)sign(fi).*(max(0,1-abs(fi)/(pi/3)));
 
 iso_par.Rul2Uconf=1;
 
-iso_par.SCENARIO6=3;
+iso_par.SCENARIO6=0; %0,1,2,3 %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 iso_par.ExpName='exp6_';
 iso_par.ExpName(6)=48+iso_par.SCENARIO6;
 
@@ -88,7 +88,17 @@ global Yellows;  Yellows=zeros(12,4);
 
 global Modul;
 
-Modul.Tend=10000; %Время работы
+Modul.Tend=1000; %Время работы
+if iso_par.SCENARIO6==0
+    Modul.Tend=500; %Время работы
+end
+if iso_par.SCENARIO6==2
+    Modul.Tend=2000; %Время работы
+end
+if iso_par.SCENARIO6==3
+    Modul.Tend=1000; %Время работы
+end
+
 Modul.dT=0.1;     %Щаг дискретизации
 Modul.freq=1;
 Modul.save_freq=5; 
@@ -99,11 +109,11 @@ Modul.N=0;
 Modul.viz=0;
 Modul.SaveExp=1;  %ЗАПИСЬ ЛОГОВ
 %% 
-Yellows(1,:)=[1,0,-80,0];
-Yellows(2,:)=[1,40,80,0];
-Yellows(3,:)=[1,150,-100,0];
-Yellows(4,:)=[1,150,-400,0];
-Yellows(5,:)=[1,-350,200,0];
+Yellows(1,:)=[1,30,-30,0];
+Yellows(2,:)=[1,50,100,0];
+Yellows(3,:)=[1,150,100,0];
+Yellows(4,:)=[1,-400,150,0];
+Yellows(5,:)=[1,200,-350,0];
 exp6_data.V=ones(iso_par.Nagent,2);
 exp6_data.a=zeros(iso_par.Nagent,2);
 exp6_data.Cv=1000;
@@ -126,8 +136,8 @@ figure(100)
 axis([-200,200,-200,200]);
 global exp3_ADDviz
 hold on
-exp3_ADDviz.C=plot(exp6_data.C(1),exp6_data.C(2),'G.','MarkerSize',25);
-exp3_ADDviz.Co=plot(exp6_data.C(1)+iso_par.d0*sin(0:pi/10:2*pi),exp6_data.C(2)+iso_par.d0*cos(0:pi/10:2*pi),'G-');
+exp3_ADDviz.C=plot(exp6_data.C(1),exp6_data.C(2),'B.','MarkerSize',25);
+exp3_ADDviz.Co=plot(exp6_data.C(1)+iso_par.d0*sin(0:pi/10:2*pi),exp6_data.C(2)+iso_par.d0*cos(0:pi/10:2*pi),'B-');
 %plot(exp6_data.C(1),exp6_data.C(2),'Go');%,'MarkerSize',25);
 MAP
 %% RUN
